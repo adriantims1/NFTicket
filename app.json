@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "NFTicket",
+    "slug": "NFTicket",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "NFTicket"
+}
