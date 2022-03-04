@@ -1,21 +1,62 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-export default function App() {
+import { NativeBaseProvider, extendTheme } from "native-base";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+
+import App from "./navigators";
+import theme from "./UITheme";
+import AppLoading from "expo-app-loading";
+import {
+  useFonts,
+  Nunito_300Light,
+  Nunito_400Regular,
+  Nunito_500Medium,
+  Nunito_700Bold,
+} from "@expo-google-fonts/nunito";
+import { LinearGradient } from "expo-linear-gradient";
+//Redux
+//import { Provider } from "react-redux";
+//import store from "./src/store/store";
+
+const config = {
+  dependencies: {
+    "linear-gradient": LinearGradient,
+  },
+};
+
+export default function () {
+  let [fontsLoaded] = useFonts({
+    "Nunito-Light": Nunito_300Light,
+    "Nunito-Regular": Nunito_400Regular,
+    "Nunito-Medium": Nunito_500Medium,
+    "Nunito-Bold": Nunito_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <StatusBar backgroundColor="#FDC521" />
+      <NativeBaseProvider theme={theme} config={config}>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <App />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </NativeBaseProvider>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "red",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
