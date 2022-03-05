@@ -26,17 +26,11 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView>
-      <Box style={styles.container} mt={4} bgColor="red.100">
+      <Box style={styles.container} mt={4}>
         {/* ----- Header ----- */}
-        <HStack
-          justifyContent={"space-between"}
-          bgColor="red.200"
-          alignItems="center"
-        >
+        <HStack justifyContent={"space-between"} alignItems="center">
           <HStack alignItems={"center"}>
-            <Avatar size="lg" color={"cyan.400"}>
-              JD
-            </Avatar>
+            <Avatar size="lg">JD</Avatar>
             <VStack ml={4}>
               <Text fontSize="xl" fontWeight={700}>
                 John Doe
