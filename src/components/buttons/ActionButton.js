@@ -1,15 +1,14 @@
 import { Button } from "native-base";
 import React from "react";
 
-const ActionButton = ({ text, style }) => {
+const ActionButton = ({ text, width }) => {
   return (
     <Button
       variant="solid"
       colorScheme="primary"
       borderRadius={10}
       _text={{ color: "black", fontWeight: "bold" }}
-      py={2}
-      style={style}
+      width={width ? width : 150}
     >
       {text}
     </Button>
