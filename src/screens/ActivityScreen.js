@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Button, HStack, Fab, FlatList, Icon, AddIcon } from "native-base";
@@ -6,7 +6,7 @@ import BigTicket from "../components/tickets/BigTicket";
 
 const { width, height } = Dimensions.get("window");
 
-const ActivityScreen = () => {
+const ActivityScreen = ({ navigation }) => {
   const [tab, useTab] = useState(true); //true: for sale tab, false: Sold tab
   return (
     <SafeAreaView>
@@ -40,9 +40,13 @@ const ActivityScreen = () => {
           <FlatList
             data={tab ? [1, 2, 3, 4, 5, 6, 7] : []}
             renderItem={() => (
-              <TouchableWithoutFeedback>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("TicketDetail");
+                }}
+              >
                 <BigTicket />
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             )}
             keyExtractor={(item, index) => item}
             showsVerticalScrollIndicator={false}

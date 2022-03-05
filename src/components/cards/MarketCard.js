@@ -1,4 +1,4 @@
-import { Text, Box, Image, ZStack, VStack } from "native-base";
+import { Text, Box, Image, ZStack, VStack, HStack } from "native-base";
 import React from "react";
 import { Dimensions } from "react-native";
 
@@ -34,19 +34,36 @@ const MarketCard = ({ imageURL, title }) => {
         }}
         borderRadius={10}
       ></Box>
-      <Box w={width / 2 - width * 0.1} h={225} p={4} justifyContent="flex-end">
-        <VStack>
-          <Text color="white" fontSize={"lg"} fontWeight={600}>
-            Rock
-          </Text>
-          <Text color="white" fontSize={"lg"} fontWeight={600}>
-            Climbing
-          </Text>
-          <Text color="white" fontSize={"xs"} fontWeight={200}>
-            California
-          </Text>
-        </VStack>
-      </Box>
+      <HStack>
+        <Box
+          w={width / 2 - width * 0.1}
+          h={225}
+          justifyContent="flex-end"
+          p={2}
+        >
+          <HStack justifyContent="space-between">
+            <VStack>
+              <Text color="white" fontSize={"lg"} fontWeight={600}>
+                Rock
+              </Text>
+              <Text color="white" fontSize={"lg"} fontWeight={600}>
+                Climbing
+              </Text>
+              <Text color="white" fontSize={"xs"} fontWeight={200}>
+                California
+              </Text>
+            </VStack>
+            <VStack alignItems={"center"}>
+              <Text color="white" fontSize={"lg"} fontWeight={600}>
+                January
+              </Text>
+              <Text color="white" fontSize={"lg"} fontWeight={600}>
+                24
+              </Text>
+            </VStack>
+          </HStack>
+        </Box>
+      </HStack>
     </ZStack>
   );
 };

@@ -11,14 +11,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 import SmallTicket from "../components/tickets/SmallTicket";
 
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 
 //Components
 import BalanceCard from "../components/cards/BalanceCard";
 import FeaturedCard from "../components/cards/FeaturedCard";
 
 const { height, width } = Dimensions.get("window");
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <Box style={styles.container}>
@@ -40,7 +40,7 @@ const HomeScreen = () => {
               uri: "https://images.unsplash.com/photo-1510771463146-e89e6e86560e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80",
             }}
           >
-            JS
+            JD
           </Avatar>
         </HStack>
         {/* ------------------ */}
@@ -54,7 +54,15 @@ const HomeScreen = () => {
             data={[1, 2, 3, 4]}
             keyExtractor={(item, index) => item}
             horizontal={true}
-            renderItem={() => <SmallTicket />}
+            renderItem={() => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("TicketDetail");
+                }}
+              >
+                <SmallTicket />
+              </TouchableOpacity>
+            )}
             showsHorizontalScrollIndicator={false}
           />
         </Box>
