@@ -1,8 +1,9 @@
 import { StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Box, Button, HStack, Fab, FlatList, Icon, AddIcon } from "native-base";
+import { Box, Button, HStack, Fab, FlatList } from "native-base";
 import BigTicket from "../components/tickets/BigTicket";
+import PlusIcon from "../components/icons/PlusIcon";
 
 const { width, height } = Dimensions.get("window");
 
@@ -60,7 +61,10 @@ const ActivityScreen = ({ navigation }) => {
           renderInPortal={false}
           shadow={2}
           size="sm"
-          icon={<AddIcon size="sm" color="black" />}
+          icon={<PlusIcon color="black" />}
+          onPress={() => {
+            navigation.navigate("SellTicket");
+          }}
         />{" "}
       </Box>
     </SafeAreaView>

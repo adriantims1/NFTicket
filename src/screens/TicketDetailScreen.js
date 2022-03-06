@@ -11,7 +11,7 @@ import AlgorandIcon from "../components/icons/AlgorandIcon";
 
 //Component
 import DetailTicket from "../components/tickets/DetailTicket";
-
+import ActionButton from "../components/buttons/ActionButton";
 const { height, width } = Dimensions.get("window");
 
 const TicketDetailScreen = ({ navigation }) => {
@@ -69,6 +69,7 @@ const TicketDetailScreen = ({ navigation }) => {
           </Text>
         </ScrollView>
         {/* ------------------ */}
+        <ActionButton text="Resell" width="100%" />
       </Box>
     </SafeAreaView>
   );

@@ -18,7 +18,6 @@ const BigTicket = () => {
       rounded={20}
       w="100%"
       h="35%"
-      mt={4}
     >
       <Box bg="white" rounded="lg" alignItems="center" h="100%">
         <VStack w="100%" h="40%" justifyContent="center">

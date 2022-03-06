@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
 import {
   Avatar,
   HStack,
@@ -15,13 +10,15 @@ import {
   IconButton,
   Button,
   FlatList,
+  Fab,
 } from "native-base";
 import BigTicket from "../components/tickets/BigTicket";
 import EditProfileIcon from "../components/icons/EditProfileIcon";
+import LogoutIcon from "../components/icons/LogoutIcon";
 
 const { height, width } = Dimensions.get("window");
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   const [tab, useTab] = useState(true); //false: history tab; true: active tab
 
   return (
@@ -49,6 +46,9 @@ const ProfileScreen = () => {
             variant={"unstyled"}
             icon={<EditProfileIcon color="black" />}
             color="transparent"
+            onPress={() => {
+              navigation.navigate("ProfileEdit");
+            }}
           ></IconButton>
         </HStack>
         {/* ------------------ */}
@@ -79,9 +79,13 @@ const ProfileScreen = () => {
           <FlatList
             data={tab ? [1, 2, 3, 4, 5, 6, 7] : []}
             renderItem={() => (
-              <TouchableWithoutFeedback>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("TicketDetail");
+                }}
+              >
                 <BigTicket />
-              </TouchableWithoutFeedback>
+              </TouchableOpacity>
             )}
             keyExtractor={(item, index) => item}
             showsVerticalScrollIndicator={false}
@@ -92,6 +96,15 @@ const ProfileScreen = () => {
         </Box>
 
         {/* ------------------ */}
+        <Fab
+          renderInPortal={false}
+          shadow={2}
+          size="md"
+          icon={<LogoutIcon color="black" />}
+          onPress={() => {
+            navigation.navigate("Login");
+          }}
+        />
       </Box>
     </SafeAreaView>
   );

@@ -1,11 +1,16 @@
-import { StyleSheet, Dimensions, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Dimensions,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Button, HStack, Input, Text } from "native-base";
 import SearchIcon from "../components/icons/SearchIcon";
 import MarketCard from "../components/cards/MarketCard";
 const { height, width } = Dimensions.get("window");
-const MarketScreen = () => {
+const MarketScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
       <Box style={styles.container}>
@@ -51,7 +56,15 @@ const MarketScreen = () => {
             }}
             numColumns={2}
             data={[1, 2, 3, 4, 5, 6, 7, 8]}
-            renderItem={() => <MarketCard />}
+            renderItem={() => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("EventDetail");
+                }}
+              >
+                <MarketCard />
+              </TouchableOpacity>
+            )}
             keyExtractor={(item, id) => item}
           />
         </Box>

@@ -77,7 +77,15 @@ const HomeScreen = ({ navigation }) => {
             data={[7, 8, 9, 10]}
             keyExtractor={(item, index) => item}
             horizontal={true}
-            renderItem={() => <FeaturedCard />}
+            renderItem={() => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("EventDetail");
+                }}
+              >
+                <FeaturedCard />
+              </TouchableOpacity>
+            )}
             showsHorizontalScrollIndicator={false}
           />
         </Box>

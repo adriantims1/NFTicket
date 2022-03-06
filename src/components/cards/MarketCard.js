@@ -53,11 +53,11 @@ const MarketCard = ({ imageURL, title }) => {
                 California
               </Text>
             </VStack>
-            <VStack alignItems={"center"}>
-              <Text color="white" fontSize={"lg"} fontWeight={600}>
+            <VStack alignItems={"center"} justifyContent="flex-end">
+              <Text color="white" fontSize={"xs"} fontWeight={200}>
                 January
               </Text>
-              <Text color="white" fontSize={"lg"} fontWeight={600}>
+              <Text color="white" fontSize={"xl"} fontWeight={600}>
                 24
               </Text>
             </VStack>

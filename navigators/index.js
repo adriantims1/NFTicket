@@ -92,7 +92,7 @@ const stack = createStackNavigator(
     SellTicket: SellTicketScreen,
   },
   {
-    initialRouteName: "Home",
+    initialRouteName: "Login",
     defaultNavigationOptions: {
       cardStyle: {
         backgroundColor: "white",
