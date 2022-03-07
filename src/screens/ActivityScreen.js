@@ -22,7 +22,7 @@ const ActivityScreen = ({ navigation }) => {
               useTab(true);
             }}
           >
-            For Sale
+            On Sale
           </Button>
           <Button
             variant={"unstyled"}
