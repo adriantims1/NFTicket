@@ -13,9 +13,9 @@ const { width, height } = Dimensions.get("window");
 const LoginScreen = ({ navigation }) => {
   // const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [passwordInitial, setPasswordInitial] = useState('')
+  const [passwordVerify, setPasswordVerify] = useState('')
   const [password, setPassword] = useState('')
-
-  // const navigation = useNavigation;
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
@@ -26,8 +26,20 @@ const LoginScreen = ({ navigation }) => {
     return unsubscribe
   }, [])
 
-  const handleSignUp = () => {
-    console.log(email);
+  const verifyPasswords = () => {
+    if (password.localeCompare("") === 0) {
+      if (passwordInitial.localeCompare(passwordVerify) === 0) {
+        setPassword(passwordInitial);
+        handleSignUp(passwordInitial);
+      } else {
+        alert("Password does not match!");
+        return;
+      }
+      
+    }
+  }
+
+  const handleSignUp = (password) => {
     console.log(password);
     auth
     .createUserWithEmailAndPassword(email, password)
@@ -35,8 +47,7 @@ const LoginScreen = ({ navigation }) => {
       const user = userCredentials.user;
       console.log("Registered with " + user.email);
     })
-    .catch(error => alert(error.message))
-    
+    .catch(error => console.log(error))
   }
 
   return (
@@ -79,16 +90,16 @@ const LoginScreen = ({ navigation }) => {
         </FormControl>
         <FormControl mb={4}>
           <FormControl.Label>Password</FormControl.Label>
-          <Input value={password} onChangeText={text => setPassword(text)} borderColor={"black"} secureTextEntry/>
+          <Input value={passwordInitial} onChangeText={text => setPasswordInitial(text)} borderColor={"black"} secureTextEntry/>
         </FormControl>
         <FormControl mb={4}>
           <FormControl.Label>Re-type Password</FormControl.Label>
-          <Input value={password} onChangeText={text => setPassword(text)} borderColor={"black"} secureTextEntry/>
+          <Input value={passwordVerify} onChangeText={text => setPasswordVerify(text)} borderColor={"black"} secureTextEntry/>
         </FormControl>
         <ActionButton
           text="Register"
           width=" 100%"
-          onPress={() => handleSignUp()}
+          onPress={() => verifyPasswords()}
         />
 
         <HStack justifyContent={"center"} mt={4}>
