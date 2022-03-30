@@ -1,14 +1,41 @@
 import { Box, FormControl, HStack, Input, Text } from "native-base";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dimensions, TouchableOpacity } from "react-native";
 import { fontSize } from "styled-system";
 import ActionButton from "../components/buttons/ActionButton";
 import GoogleIcon from "../components/icons/GoogleIcon";
 import CoinbaseIcon from "../components/icons/CoinbaseIcon";
+import { auth } from '../firebase';
 
 const { width, height } = Dimensions.get("window");
+
 const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        navigation.replace("Home");
+      }
+    })
+    return unsubscribe
+  }, [])
+
+  const handleLogin = () => {
+    console.log(email);
+    console.log(password);
+    auth
+    .signInWithEmailAndPassword(email, password)
+    .then(userCredentials => {
+      const user = userCredentials.user;
+      console.log("Logged in with " + user.email);
+    })
+    .catch(error => alert(error.message))
+    
+  }
+
   return (
     <SafeAreaView>
       <Box w="90%" h={height} alignSelf={"center"} justifyContent={"center"}>
@@ -17,18 +44,16 @@ const LoginScreen = ({ navigation }) => {
         </Text>
         <FormControl>
           <FormControl.Label>Email</FormControl.Label>
-          <Input borderColor={"black"}></Input>
+          <Input value={email} onChangeText={text => setEmail(text)} borderColor={"black"}></Input>
         </FormControl>
         <FormControl mb={4}>
           <FormControl.Label>Password</FormControl.Label>
-          <Input borderColor="black"></Input>
+          <Input value={password} onChangeText={text => setPassword(text)} borderColor="black" secureTextEntry></Input>
         </FormControl>
         <ActionButton
           text="Sign In"
           width=" 100%"
-          onPress={() => {
-            navigation.navigate("Home");
-          }}
+          onPress={() => handleLogin()}
         />
         <HStack justifyContent={"center"} mt={4}>
           <TouchableOpacity>

@@ -1,14 +1,44 @@
 import { Box, FormControl, HStack, Input, Text } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Dimensions, TouchableOpacity } from "react-native";
+import { TextInput, Dimensions, TouchableOpacity } from "react-native";
 import { fontSize } from "styled-system";
 import ActionButton from "../components/buttons/ActionButton";
 import GoogleIcon from "../components/icons/GoogleIcon";
 import CoinbaseIcon from "../components/icons/CoinbaseIcon";
+import { auth } from '../firebase';
+import { useNavigation } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
 const LoginScreen = ({ navigation }) => {
+  // const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  // const navigation = useNavigation;
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        navigation.navigate("Home");
+      }
+    })
+    return unsubscribe
+  }, [])
+
+  const handleSignUp = () => {
+    console.log(email);
+    console.log(password);
+    auth
+    .createUserWithEmailAndPassword(email, password)
+    .then(userCredentials => {
+      const user = userCredentials.user;
+      console.log("Registered with " + user.email);
+    })
+    .catch(error => alert(error.message))
+    
+  }
+
   return (
     <SafeAreaView>
       <Box w="90%" h={height} alignSelf={"center"} justifyContent={"center"}>
@@ -44,22 +74,21 @@ const LoginScreen = ({ navigation }) => {
         </FormControl>
         <FormControl>
           <FormControl.Label>Email</FormControl.Label>
-          <Input borderColor={"black"}></Input>
+          {/* <FormControl.Control type="email" placeholder= "Email"/> */}
+          <Input value={email} onChangeText={text => setEmail(text)} borderColor={"black"}/>
         </FormControl>
         <FormControl mb={4}>
           <FormControl.Label>Password</FormControl.Label>
-          <Input borderColor="black"></Input>
+          <Input value={password} onChangeText={text => setPassword(text)} borderColor={"black"} secureTextEntry/>
         </FormControl>
         <FormControl mb={4}>
           <FormControl.Label>Re-type Password</FormControl.Label>
-          <Input borderColor="black"></Input>
+          <Input value={password} onChangeText={text => setPassword(text)} borderColor={"black"} secureTextEntry/>
         </FormControl>
         <ActionButton
           text="Register"
           width=" 100%"
-          onPress={() => {
-            navigation.navigate("Home");
-          }}
+          onPress={() => handleSignUp()}
         />
 
         <HStack justifyContent={"center"} mt={4}>
