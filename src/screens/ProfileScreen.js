@@ -15,11 +15,21 @@ import {
 import BigTicket from "../components/tickets/BigTicket";
 import EditProfileIcon from "../components/icons/EditProfileIcon";
 import LogoutIcon from "../components/icons/LogoutIcon";
+import { auth } from "../firebase";
 
 const { height, width } = Dimensions.get("window");
 
 const ProfileScreen = ({ navigation }) => {
   const [tab, useTab] = useState(true); //false: history tab; true: active tab
+
+  const handleSignOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigation.replace("Login")
+      })
+      .catch(error => alert(error.message))
+  }
 
   return (
     <SafeAreaView>
@@ -101,9 +111,7 @@ const ProfileScreen = ({ navigation }) => {
           shadow={2}
           size="md"
           icon={<LogoutIcon color="black" />}
-          onPress={() => {
-            navigation.navigate("Login");
-          }}
+          onPress={() => handleSignOut()}
         />
       </Box>
     </SafeAreaView>

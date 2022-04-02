@@ -12,6 +12,7 @@ import React from "react";
 import SmallTicket from "../components/tickets/SmallTicket";
 
 import { Dimensions, StyleSheet, TouchableOpacity } from "react-native";
+import { auth } from '../firebase'
 
 //Components
 import BalanceCard from "../components/cards/BalanceCard";
@@ -29,7 +30,7 @@ const HomeScreen = ({ navigation }) => {
               Welcome Back,
             </Text>
             <Text fontWeight={700} fontSize="xl">
-              John!
+              {auth.currentUser?.email}
             </Text>
           </VStack>
           <Avatar
