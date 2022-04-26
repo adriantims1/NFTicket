@@ -4,6 +4,9 @@ import Dash from "react-native-dash";
 import { StyleSheet } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
+//Redux
+import { connect } from "react-redux";
+
 const BigTicket = () => {
   return (
     <Box
@@ -87,4 +90,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BigTicket;
+const mapStateToProps = ({}) => ({});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BigTicket);

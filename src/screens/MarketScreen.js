@@ -4,13 +4,21 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Button, HStack, Input, Text } from "native-base";
 import SearchIcon from "../components/icons/SearchIcon";
 import MarketCard from "../components/cards/MarketCard";
 const { height, width } = Dimensions.get("window");
-const MarketScreen = ({ navigation }) => {
+import moment from "moment";
+
+//redux
+import { connect } from "react-redux";
+
+const MarketScreen = ({ navigation, getEvent, event }) => {
+  const [search, setSearch] = useState("");
+  const [events, setEvents] = useState(event.allEvent);
+
   return (
     <SafeAreaView>
       <Box style={styles.container}>
@@ -25,6 +33,16 @@ const MarketScreen = ({ navigation }) => {
             InputLeftElement={<SearchIcon color="black" />}
             border={0}
             mt={2}
+            value={search}
+            onChangeText={(text) => setSearch(text)}
+            onSubmitEditing={() => {
+              const newEvents = event.allEvent.filter((item) => {
+                return item.title
+                  .toLowerCase()
+                  .match(new RegExp(search.toLowerCase()));
+              });
+              setEvents(newEvents);
+            }}
           ></Input>
         </Box>
         {/* ------------------ */}
@@ -55,17 +73,53 @@ const MarketScreen = ({ navigation }) => {
               flexGrow: 1,
             }}
             numColumns={2}
-            data={[1, 2, 3, 4, 5, 6, 7, 8]}
-            renderItem={() => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("EventDetail");
-                }}
-              >
-                <MarketCard />
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item, id) => item}
+            data={events}
+            renderItem={({ item }) => {
+              const date = moment(
+                `${item.date} ${item.time}`,
+                "YYYY-MM-DD hh:mm:ss"
+              );
+              const monthNames = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+              ];
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("EventDetail", {
+                      imageURL: item.images /*array of images*/,
+                      title: item.title,
+                      venue: `${item.street_address}, ${item.city} ${item.state} ${item.zipcode}`,
+                      date: `${date.date()} ${
+                        monthNames[date.month()]
+                      } ${date.year()} - ${item.time}`,
+                      price: 90.132152,
+                      description: item.description,
+                      id: item.ticket_nft_id,
+                    });
+                  }}
+                >
+                  <MarketCard
+                    imageURL={item.images[0]}
+                    title={item.title}
+                    location={item.state}
+                    month={monthNames[date.month()]}
+                    date={date.date()}
+                  />
+                </TouchableOpacity>
+              );
+            }}
+            keyExtractor={(item, id) => item.id}
           />
         </Box>
       </Box>
@@ -80,5 +134,10 @@ const styles = StyleSheet.create({
     height: height * 0.9,
   },
 });
+const mapStateToProps = ({ event }) => ({
+  event,
+});
 
-export default MarketScreen;
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MarketScreen);

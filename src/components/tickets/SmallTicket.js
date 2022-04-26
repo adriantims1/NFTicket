@@ -1,8 +1,8 @@
 import { Box, Text } from "native-base";
-import React from "react";
+import React, { useEffect } from "react";
 import Dash from "react-native-dash";
 
-const SmallTicket = () => {
+const SmallTicket = ({ title, date }) => {
   return (
     <Box
       bg={{
@@ -19,8 +19,9 @@ const SmallTicket = () => {
     >
       <Box bg="white" rounded="lg" alignItems="center">
         <Text m="2" fontWeight={700}>
-          Super Bowl
+          {title}
         </Text>
+
         <Dash
           style={{ width: "100%", height: 0 }}
           dashThickness={1}
@@ -31,7 +32,7 @@ const SmallTicket = () => {
           m="2"
         />
         <Text m="2" fontWeight={700}>
-          Sunday, 13 Feb 22
+          {date}
         </Text>
       </Box>
     </Box>

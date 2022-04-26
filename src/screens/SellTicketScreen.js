@@ -13,12 +13,7 @@ import {
   Stack,
   AddIcon,
 } from "native-base";
-import {
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-} from "react-native";
+import { StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import ActionButton from "../components/buttons/ActionButton";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -32,49 +27,47 @@ const { height, width } = Dimensions.get("window");
 const EventDetailScreen = ({ navigation }) => {
   return (
     <SafeAreaView>
-      <Box style={styles.container} mt={4}>
-        {/* ----- Navigator ----- */}
+      <KeyboardAwareScrollView>
+        <Box style={styles.container} mt={4}>
+          {/* ----- Navigator ----- */}
 
-        <HStack alignItems="center" justifyContent="space-between">
-          <IconButton
-            icon={<CloseIcon color="black" />}
-            onPress={() => {
-              navigation.goBack();
-            }}
-            variant="unstyled"
-          ></IconButton>
+          <HStack alignItems="center" justifyContent="space-between">
+            <IconButton
+              icon={<CloseIcon color="black" />}
+              onPress={() => {
+                navigation.goBack();
+              }}
+              variant="unstyled"
+            ></IconButton>
 
-          <IconButton
-            icon={<CheckmarkIcon color="black" />}
-            onPress={() => {
-              navigation.goBack();
-            }}
-            variant="unstyled"
-          ></IconButton>
-        </HStack>
-        {/* ------------------ */}
+            <IconButton
+              icon={<CheckmarkIcon color="black" />}
+              onPress={() => {
+                navigation.goBack();
+              }}
+              variant="unstyled"
+            ></IconButton>
+          </HStack>
+          {/* ------------------ */}
 
-        {/* ----- Profile Picture ----- */}
+          {/* ----- Profile Picture ----- */}
 
-        <HStack
-          width="90%"
-          h={width * 0.7}
-          borderRadius={1}
-          borderWidth={1}
-          borderStyle="dashed"
-          borderColor="black"
-          alignSelf={"center"}
-          justifyContent={"center"}
-          alignItems="center"
-        >
-          <AddIcon size="xl" />
-        </HStack>
-        {/* ------------------ */}
-        {/* ----- Forms ----- */}
-        <KeyboardAwareScrollView
-          keyboardShouldPersistTaps="always"
-          style={{ flex: 1, flexGrow: 1, flexShrink: 1 }}
-        >
+          <HStack
+            width="90%"
+            h={width * 0.7}
+            borderRadius={1}
+            borderWidth={1}
+            borderStyle="dashed"
+            borderColor="black"
+            alignSelf={"center"}
+            justifyContent={"center"}
+            alignItems="center"
+          >
+            <AddIcon size="xl" />
+          </HStack>
+          {/* ------------------ */}
+          {/* ----- Forms ----- */}
+
           <FormControl>
             <Stack>
               <FormControl.Label>Event Name</FormControl.Label>
@@ -105,10 +98,10 @@ const EventDetailScreen = ({ navigation }) => {
               <Input />
             </Stack>
           </FormControl>
-        </KeyboardAwareScrollView>
 
-        {/* ------------------ */}
-      </Box>
+          {/* ------------------ */}
+        </Box>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };

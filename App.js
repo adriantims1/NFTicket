@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import { PersistGate } from "redux-persist/integration/react";
 import { NativeBaseProvider, extendTheme } from "native-base";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -18,8 +18,9 @@ import {
 } from "@expo-google-fonts/nunito";
 import { LinearGradient } from "expo-linear-gradient";
 //Redux
-//import { Provider } from "react-redux";
-//import store from "./src/store/store";
+import { Provider } from "react-redux";
+import { store, persistor } from "./src/redux/store";
+// import { PersistGate } from "redux-persist/integration/react";
 
 const config = {
   dependencies: {
@@ -42,11 +43,15 @@ export default function () {
     <>
       <StatusBar backgroundColor="#FDC521" />
       <NativeBaseProvider theme={theme} config={config}>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            <App />
-          </NavigationContainer>
-        </SafeAreaProvider>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <SafeAreaProvider>
+              <NavigationContainer>
+                <App />
+              </NavigationContainer>
+            </SafeAreaProvider>
+          </PersistGate>
+        </Provider>
       </NativeBaseProvider>
     </>
   );

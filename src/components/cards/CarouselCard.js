@@ -2,10 +2,8 @@ import React from "react";
 import { View } from "react-native";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import CarouselCardItem, { SLIDER_WIDTH, ITEM_WIDTH } from "./CarouselCardItem";
-import data from "../../assets/data";
-import { Box } from "native-base";
 
-const CarouselCard = () => {
+const CarouselCard = ({ data }) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
 

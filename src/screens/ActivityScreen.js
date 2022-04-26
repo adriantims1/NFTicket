@@ -4,10 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Button, HStack, Fab, FlatList } from "native-base";
 import BigTicket from "../components/tickets/BigTicket";
 import PlusIcon from "../components/icons/PlusIcon";
+import { connect } from "react-redux";
 
 const { width, height } = Dimensions.get("window");
 
-const ActivityScreen = ({ navigation }) => {
+const ActivityScreen = ({ navigation, profile }) => {
   const [tab, useTab] = useState(true); //true: for sale tab, false: Sold tab
   return (
     <SafeAreaView>
@@ -57,15 +58,17 @@ const ActivityScreen = ({ navigation }) => {
           ></FlatList>
         </Box>
         {/* ------------------ */}
-        <Fab
-          renderInPortal={false}
-          shadow={2}
-          size="sm"
-          icon={<PlusIcon color="black" />}
-          onPress={() => {
-            navigation.navigate("SellTicket");
-          }}
-        />{" "}
+        {profile.isSeller ? (
+          <Fab
+            renderInPortal={false}
+            shadow={2}
+            size="sm"
+            icon={<PlusIcon color="black" />}
+            onPress={() => {
+              navigation.navigate("SellTicket");
+            }}
+          />
+        ) : null}{" "}
       </Box>
     </SafeAreaView>
   );
@@ -79,4 +82,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ActivityScreen;
+const mapStateToProps = ({ profile }) => ({
+  profile,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ActivityScreen);

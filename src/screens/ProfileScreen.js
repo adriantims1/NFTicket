@@ -16,20 +16,21 @@ import BigTicket from "../components/tickets/BigTicket";
 import EditProfileIcon from "../components/icons/EditProfileIcon";
 import LogoutIcon from "../components/icons/LogoutIcon";
 import { auth } from "../firebase";
+import { connect } from "react-redux";
 
 const { height, width } = Dimensions.get("window");
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation, profile }) => {
   const [tab, useTab] = useState(true); //false: history tab; true: active tab
 
   const handleSignOut = () => {
     auth
       .signOut()
       .then(() => {
-        navigation.replace("Login")
+        navigation.replace("Login");
       })
-      .catch(error => alert(error.message))
-  }
+      .catch((error) => alert(error.message));
+  };
 
   return (
     <SafeAreaView>
@@ -40,16 +41,16 @@ const ProfileScreen = ({ navigation }) => {
             <Avatar
               size="lg"
               source={{
-                uri: "https://images.unsplash.com/photo-1510771463146-e89e6e86560e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=627&q=80",
+                uri: profile.avatarURL,
               }}
             >
-              JD
+              {`${profile.firstName[0]}${profile.lastName[0]}`}
             </Avatar>
             <VStack ml={4}>
               <Text fontSize="xl" fontWeight={700}>
-                John Doe
+                {`${profile.firstName} ${profile.lastName}`}
               </Text>
-              <Text>@johndoe</Text>
+              <Text>{`@${profile.username}`}</Text>
             </VStack>
           </HStack>
           <IconButton
@@ -126,4 +127,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+const mapStateToProps = ({ profile }) => ({
+  profile,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);

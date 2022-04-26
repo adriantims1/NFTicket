@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { HStack, IconButton, Text, Box, ScrollView } from "native-base";
 import { StyleSheet, Dimensions } from "react-native";
+import moment from "moment";
 
 //Icon
 import BackIcon from "../components/icons/BackIcon";
@@ -14,7 +15,59 @@ import DetailTicket from "../components/tickets/DetailTicket";
 import ActionButton from "../components/buttons/ActionButton";
 const { height, width } = Dimensions.get("window");
 
-const TicketDetailScreen = ({ navigation }) => {
+//Redux
+import { connect } from "react-redux";
+
+const TicketDetailScreen = ({ navigation, event }) => {
+  const [nftId, setNftId] = useState("");
+  const [eventName, setEventName] = useState("");
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  useEffect(() => {
+    const {
+      event_price,
+      ticket_nft_id,
+      title,
+      description,
+      street_address,
+      city,
+      zipcode,
+      state,
+      date,
+      time,
+    } = event.allEvent.find(
+      (el) => el.ticket_nft_id === navigation.getParam("id", "")
+    );
+
+    setNftId(ticket_nft_id);
+    setEventName(title);
+    setLocation(`${street_address}, ${city} ${state} ${zipcode}`);
+    setPrice(event_price);
+    setDescription(description);
+    const dateMoment = moment(`${date} ${time}`, "YYYY-MM-DD hh:mm:ss");
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    setDate(
+      `${dateMoment.date()} ${
+        monthNames[dateMoment.month()]
+      } ${dateMoment.year()} - ${time}`
+    );
+  }, []);
+
   return (
     <SafeAreaView>
       <Box style={styles.container} mt={4}>
@@ -28,7 +81,7 @@ const TicketDetailScreen = ({ navigation }) => {
             variant="unstyled"
           ></IconButton>
           <Text fontWeight={700} fontSize="lg">
-            ID 6876904689
+            ID {nftId}
           </Text>
         </HStack>
         {/* ------------------ */}
@@ -38,34 +91,28 @@ const TicketDetailScreen = ({ navigation }) => {
         {/* ----- Detail ----- */}
         <ScrollView showsVerticalScrollIndicator={false} mt={4}>
           <Text fontSize="2xl" fontWeight={700} mb={2}>
-            Super Bowl
+            {eventName}
           </Text>
           <HStack mb={2}>
             <PinIcon color="black" />
             <Text ml={2} fontWeight={700} fontSize="md">
-              Maddison Squre Garden
+              {location}
             </Text>
           </HStack>
           <HStack mb={2}>
             <CalendarIcon color="black" />
             <Text ml={2} fontWeight={700} fontSize="md">
-              13 February 2022 - 10:00 AM
+              {date}
             </Text>
           </HStack>
           <HStack mb={2}>
             <AlgorandIcon color="black" />
             <Text ml={2} fontWeight={700} fontSize="md">
-              96.31843
+              {price}
             </Text>
           </HStack>
           <Text fontWeight={700} fontSize="md">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Pellentesque diam volutpat commodo sed egestas egestas fringilla
-            phasellus. Id aliquet risus feugiat in ante metus dictum at.
-            Fermentum leo vel orci porta non pulvinar. Sit amet purus gravida
-            quis. Malesuada proin libero nunc consequat interdum varius. Commodo
-            elit at imperdiet dui accumsan sit amet nulla.
+            {description}
           </Text>
         </ScrollView>
         {/* ------------------ */}
@@ -82,5 +129,10 @@ const styles = StyleSheet.create({
     height: height * 0.95,
   },
 });
+const mapStateToProps = ({ event }) => ({
+  event,
+});
 
-export default TicketDetailScreen;
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TicketDetailScreen);

@@ -10,7 +10,7 @@ const BalanceCard = () => {
     <VStack p={5} mt={4} bgColor="white" style={styles.container}>
       <HStack justifyContent="space-between" mb={4}>
         <AlgorandInBalanceCardIcon />
-        <ActionButton text="Unlink" width={100} />
+        <ActionButton text="Detail" width={100} />
       </HStack>
       <HStack justifyContent="space-between" alignItems={"center"}>
         <VStack>

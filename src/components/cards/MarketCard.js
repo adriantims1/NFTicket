@@ -1,9 +1,10 @@
 import { Text, Box, Image, ZStack, VStack, HStack } from "native-base";
 import React from "react";
 import { Dimensions } from "react-native";
+import states from "us-state-converter";
 
 const { width, height } = Dimensions.get("window");
-const MarketCard = ({ imageURL, title }) => {
+const MarketCard = ({ imageURL, title, month, date, location }) => {
   return (
     <ZStack w={width / 2 - width * 0.1} h={225} mb={8}>
       <Box
@@ -14,7 +15,7 @@ const MarketCard = ({ imageURL, title }) => {
       >
         <Image
           source={{
-            uri: "https://wallpaperaccess.com/full/317501.jpg",
+            uri: imageURL,
           }}
           resizeMode="cover"
           alt="alternate text"
@@ -44,21 +45,19 @@ const MarketCard = ({ imageURL, title }) => {
           <HStack justifyContent="space-between">
             <VStack>
               <Text color="white" fontSize={"lg"} fontWeight={600}>
-                Rock
+                {title}
               </Text>
-              <Text color="white" fontSize={"lg"} fontWeight={600}>
-                Climbing
-              </Text>
+
               <Text color="white" fontSize={"xs"} fontWeight={200}>
-                California
+                {states(location).name}
               </Text>
             </VStack>
             <VStack alignItems={"center"} justifyContent="flex-end">
               <Text color="white" fontSize={"xs"} fontWeight={200}>
-                January
+                {month}
               </Text>
               <Text color="white" fontSize={"xl"} fontWeight={600}>
-                24
+                {date}
               </Text>
             </VStack>
           </HStack>
