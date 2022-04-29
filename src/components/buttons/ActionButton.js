@@ -1,7 +1,7 @@
 import { Button } from "native-base";
 import React from "react";
 
-const ActionButton = ({ text, width, onPress }) => {
+const ActionButton = ({ text, width, onPress, mt }) => {
   return (
     <Button
       variant="solid"
@@ -10,6 +10,7 @@ const ActionButton = ({ text, width, onPress }) => {
       _text={{ color: "black", fontWeight: "bold" }}
       width={width ? width : 150}
       onPress={onPress}
+      mt={mt}
     >
       {text}
     </Button>

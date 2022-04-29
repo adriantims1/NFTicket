@@ -2,7 +2,7 @@ import { Box, Text } from "native-base";
 import React from "react";
 import Dash from "react-native-dash";
 
-const BigTicket = () => {
+const BigTicket = ({ title, date }) => {
   return (
     <Box
       bg={{
@@ -26,7 +26,7 @@ const BigTicket = () => {
         h="100%"
       >
         <Text m="2" fontWeight={700}>
-          Super Bowl
+          {title}
         </Text>
         <Dash
           style={{ width: "100%", height: 0 }}
@@ -38,7 +38,7 @@ const BigTicket = () => {
           m="2"
         />
         <Text m="2" fontWeight={700}>
-          Sunday, 13 Feb 22
+          {date}
         </Text>
       </Box>
     </Box>

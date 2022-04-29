@@ -18,6 +18,7 @@ import { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { modifyProfile, modifyPassword } from "../redux/actions/profile";
 import { auth } from "../firebase";
+import * as ImagePicker from "expo-image-picker";
 
 //Icon
 import CloseIcon from "../components/icons/CloseIcon";
@@ -25,10 +26,12 @@ import CheckmarkIcon from "../components/icons/CheckmarkIcon";
 
 //Redux
 import { connect } from "react-redux";
+import axios from "axios";
+import { format } from "date-fns";
 
 const { height, width } = Dimensions.get("window");
 
-const ProfileEditScreen = ({ navigation, profile }) => {
+const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
   const [name, setName] = useState(`${profile.firstName} ${profile.lastName}`);
   const [email, setEmail] = useState(profile.email);
   const [oldPassword, setOldPassword] = useState("");
@@ -43,26 +46,71 @@ const ProfileEditScreen = ({ navigation, profile }) => {
 
   const verifyAndModifyProfile = async () => {
     try {
-      const userCredentials = await auth.signInWithEmailAndPassword(
-        email,
-        oldPassword
-      );
+      let temp = avatarURL;
+      if (avatarURL !== profile.avatarURL) {
+        //Upload Image to imgBB
+        const form = new FormData();
+        form.append("image", {
+          uri: avatarURL,
+          type: "image/jpg",
+          name: "image.jpg",
+        });
+        const data = await axios.post(
+          "https://api.imgbb.com/1/upload?key=6b1e8b98295c868b89d24134aa528527",
+          form
+        );
+        const nameArray = name.split(" ");
+        const [firstName, ...lastName] = nameArray;
+        setAvatarURL(data.data.data.display_url);
+
+        temp = data.data.data.display_url;
+        console.log("m", temp);
+      }
       if (newPassword !== confirmPassword) {
         setHasError(true);
         setErrorMessage("Password Confirmation Fail");
       } else {
+        const userCredentials = await auth.signInWithEmailAndPassword(
+          email,
+          oldPassword
+        );
         if (newPassword !== "") {
           modifyPassword(newPassword);
         }
         // modify profile
         const nameArray = name.split(" ");
         const [firstName, ...lastName] = nameArray;
-        modifyProfile(email, firstName, lastName, profile.avatarURL);
-        navigation.goBack();
+        console.log(temp);
+        modifyProfile(
+          email,
+          firstName,
+          lastName.join(" "),
+          temp,
+          profile.username,
+          profile.isSeller
+        );
       }
+      navigation.goBack();
     } catch (err) {
+      console.log(err);
       setHasError(true);
       setErrorMessage("Incorrect Password");
+    }
+  };
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setAvatarURL(result.uri);
     }
   };
 
@@ -101,7 +149,7 @@ const ProfileEditScreen = ({ navigation, profile }) => {
             >
               {`${profile.firstName[0]}${profile.lastName[0]}`}
             </Avatar>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={pickImage}>
               <Text fontSize="lg">Change Profile Picture</Text>
             </TouchableOpacity>
           </VStack>
@@ -116,14 +164,7 @@ const ProfileEditScreen = ({ navigation, profile }) => {
                 setName(text);
               }}
             />
-            <Input
-              mt={2}
-              placeholder="Email"
-              onChangeText={(text) => {
-                setEmail(text);
-              }}
-              value={email}
-            />
+            <Input mt={2} placeholder="Email" value={email} editable={false} />
             <FormControl isInvalid={errorMessage === "Incorrect Password"}>
               <Input
                 mt={2}

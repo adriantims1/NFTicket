@@ -30,7 +30,7 @@ const MarketCard = ({ imageURL, title, month, date, location }) => {
           linearGradient: {
             colors: ["transparent", "secondary.700"],
             start: [0, 0],
-            end: [0, 1.5],
+            end: [0, 1],
           },
         }}
         borderRadius={10}
@@ -43,7 +43,7 @@ const MarketCard = ({ imageURL, title, month, date, location }) => {
           p={2}
         >
           <HStack justifyContent="space-between">
-            <VStack>
+            <VStack w="75%">
               <Text color="white" fontSize={"lg"} fontWeight={600}>
                 {title}
               </Text>

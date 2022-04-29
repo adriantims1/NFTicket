@@ -18,7 +18,7 @@ import ActionButton from "../components/buttons/ActionButton";
 
 const { height, width } = Dimensions.get("window");
 
-const EventDetailScreen = ({ navigation }) => {
+const EventDetailScreen = ({ navigation, event, profile }) => {
   // const { imageURL, title, venue, date, price, description } = route.params;
   return (
     <SafeAreaView>
@@ -68,7 +68,15 @@ const EventDetailScreen = ({ navigation }) => {
           </Text>
         </ScrollView>
         {/* ------------------ */}
-        <ActionButton text="Resell" width="100%" />
+
+        {navigation.getParam("vendor", "") !== profile.email ? (
+          <HStack w="100%" justifyContent={"space-between"}>
+            <ActionButton text="Buy Ticket From Event Manager" width="45%" />
+            <ActionButton text="Buy Ticket From Secondary Market" width="45%" />
+          </HStack>
+        ) : (
+          <ActionButton text="Modify Event" width="100%" />
+        )}
       </Box>
     </SafeAreaView>
   );
@@ -81,8 +89,9 @@ const styles = StyleSheet.create({
     height: height * 0.95,
   },
 });
-const mapStateToProps = ({ event }) => ({
+const mapStateToProps = ({ event, profile }) => ({
   event,
+  profile,
 });
 
 const mapDispatchToProps = {};

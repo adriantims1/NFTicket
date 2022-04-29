@@ -12,7 +12,7 @@ const initialState = {
   lastName: "",
   email: "",
   isSeller: false,
-
+  balance: 0,
   username: "",
   avatarURL: "",
   walletAddress: "",
@@ -29,6 +29,7 @@ export default (state = initialState, { type, payload }) => {
         firstName: "",
         lastName: "",
         email: "",
+        balance: 0,
         isSeller: false,
         walletAddress: "",
         isFetching: true,
@@ -46,6 +47,7 @@ export default (state = initialState, { type, payload }) => {
         walletAddress: payload.walletAddress,
         username: payload.username,
         avatarURL: payload.avatarURL,
+        balance: payload.balance,
         isFetching: false,
         hasError: false,
         errorMessage: "",
@@ -61,12 +63,6 @@ export default (state = initialState, { type, payload }) => {
     case MODIFY_PROFILE:
       return {
         ...state,
-        firstName: "",
-        lastName: "",
-        email: "",
-        isSeller: false,
-        walletAddress: "",
-        username: "",
         isFetching: true,
         hasError: false,
         errorMessage: "",
@@ -88,6 +84,8 @@ export default (state = initialState, { type, payload }) => {
         firstName: payload.firstName,
         lastName: payload.lastName,
         avatarURL: payload.avatarURL,
+        username: payload.username,
+
         isFetching: false,
         hasError: false,
         errorMessage: "",

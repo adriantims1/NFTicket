@@ -22,7 +22,7 @@ const FeaturedCard = ({ imageURL, title }) => {
           linearGradient: {
             colors: ["transparent", "secondary.700"],
             start: [0, 0],
-            end: [0, 1.5],
+            end: [0, 1],
           },
         }}
         borderRadius={20}

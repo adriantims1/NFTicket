@@ -5,10 +5,11 @@ import { Box, Button, HStack, Fab, FlatList } from "native-base";
 import BigTicket from "../components/tickets/BigTicket";
 import PlusIcon from "../components/icons/PlusIcon";
 import { connect } from "react-redux";
+import moment from "moment";
 
 const { width, height } = Dimensions.get("window");
 
-const ActivityScreen = ({ navigation, profile }) => {
+const ActivityScreen = ({ navigation, profile, ticket, event }) => {
   const [tab, useTab] = useState(true); //true: for sale tab, false: Sold tab
   return (
     <SafeAreaView>
@@ -40,17 +41,73 @@ const ActivityScreen = ({ navigation, profile }) => {
         {/* ----- Display ----- */}
         <Box alignItems={"center"} h="100%" flex={1} mt={4}>
           <FlatList
-            data={tab ? [1, 2, 3, 4, 5, 6, 7] : []}
-            renderItem={() => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("TicketDetail");
-                }}
-              >
-                <BigTicket />
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item, index) => item}
+            keyExtractor={(item, id) => {
+              const toReturn = item.ticket?.id ? item.ticket.id : item.id;
+            }}
+            data={
+              tab
+                ? [
+                    ...ticket.allTicket
+                      .map((el) => ({ ...el, type: "ticket" }))
+                      .filter((el) => el.on_sale),
+                    ...event.allEvent
+                      .map((el) => ({ ...el, type: "event" }))
+                      .filter((el) => el.vendor === profile.email),
+                  ]
+                : []
+            }
+            renderItem={({ item }) => {
+              const { date, time, title, type } = item;
+              const dateMoment = moment(
+                `${date} ${time}`,
+                "YYYY-MM-DD hh:mm:ss"
+              );
+              const monthNames = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+              ];
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (type === "ticket")
+                      navigation.navigate("TicketDetail", {
+                        id: item.ticket.id,
+                      });
+                    else if (type === "event") {
+                      navigation.navigate("EventDetail", {
+                        imageURL: item.images /*array of images*/,
+                        title: item.title,
+                        venue: `${item.street_address}, ${item.city} ${item.state} ${item.zipcode}`,
+                        date: `${dateMoment.date()} ${
+                          monthNames[dateMoment.month()]
+                        } ${dateMoment.year()} - ${item.time}`,
+                        price: item.event_price,
+                        description: item.description,
+                        id: item.ticket_nft_id,
+                        vendor: item.vendor,
+                      });
+                    }
+                  }}
+                >
+                  <BigTicket
+                    title={title}
+                    date={`${dateMoment.date()} ${
+                      monthNames[dateMoment.month()]
+                    } ${dateMoment.year()} - ${time}`}
+                  />
+                </TouchableOpacity>
+              );
+            }}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               flexGrow: 1,
@@ -82,8 +139,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ profile }) => ({
+const mapStateToProps = ({ profile, event, ticket }) => ({
   profile,
+  event,
+  ticket,
 });
 
 const mapDispatchToProps = {};

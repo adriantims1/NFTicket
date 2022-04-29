@@ -17,10 +17,11 @@ import EditProfileIcon from "../components/icons/EditProfileIcon";
 import LogoutIcon from "../components/icons/LogoutIcon";
 import { auth } from "../firebase";
 import { connect } from "react-redux";
+import moment from "moment";
 
 const { height, width } = Dimensions.get("window");
 
-const ProfileScreen = ({ navigation, profile }) => {
+const ProfileScreen = ({ navigation, profile, ticket, event }) => {
   const [tab, useTab] = useState(true); //false: history tab; true: active tab
 
   const handleSignOut = () => {
@@ -88,17 +89,47 @@ const ProfileScreen = ({ navigation, profile }) => {
         {/* ----- Display ----- */}
         <Box alignItems={"center"} h="100%" flex={1}>
           <FlatList
-            data={tab ? [1, 2, 3, 4, 5, 6, 7] : []}
-            renderItem={() => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("TicketDetail");
-                }}
-              >
-                <BigTicket />
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item, index) => item}
+            data={
+              tab
+                ? ticket.allTicket.filter((el) => !el.is_expired)
+                : ticket.allTicket.filter((el) => el.is_expired)
+            }
+            renderItem={({ item }) => {
+              const { title, date, time, id } = item;
+              const dateMoment = moment(
+                `${date} ${time}`,
+                "YYYY-MM-DD hh:mm:ss"
+              );
+              const monthNames = [
+                "January",
+                "February",
+                "March",
+                "April",
+                "May",
+                "June",
+                "July",
+                "August",
+                "September",
+                "October",
+                "November",
+                "December",
+              ];
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("TicketDetail", { id });
+                  }}
+                >
+                  <BigTicket
+                    title={title}
+                    date={`${dateMoment.date()} ${
+                      monthNames[dateMoment.month()]
+                    } ${dateMoment.year()} - ${time}`}
+                  />
+                </TouchableOpacity>
+              );
+            }}
+            keyExtractor={(item, index) => item.ticket.id}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               flexGrow: 1,
@@ -127,8 +158,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ profile }) => ({
+const mapStateToProps = ({ profile, ticket, event }) => ({
   profile,
+  ticket,
+  event,
 });
 
 const mapDispatchToProps = {};

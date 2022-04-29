@@ -2,6 +2,7 @@ import {
   FETCH_TICKET,
   FETCH_TICKET_FAIL,
   FETCH_TICKET_SUCCESS,
+  BUY_TICKET_FAIL,
 } from "../types/ticket";
 
 const initialState = {
@@ -28,6 +29,13 @@ export default (state = initialState, { type, payload }) => {
       };
 
     case FETCH_TICKET_FAIL:
+      return {
+        ...state,
+        isFetching: false,
+        hasError: true,
+        errorMessage: payload.errorMessage,
+      };
+    case BUY_TICKET_FAIL:
       return {
         ...state,
         isFetching: false,

@@ -18,7 +18,7 @@ const { height, width } = Dimensions.get("window");
 //Redux
 import { connect } from "react-redux";
 
-const TicketDetailScreen = ({ navigation, event }) => {
+const TicketDetailScreen = ({ navigation, ticket }) => {
   const [nftId, setNftId] = useState("");
   const [eventName, setEventName] = useState("");
   const [location, setLocation] = useState("");
@@ -37,9 +37,7 @@ const TicketDetailScreen = ({ navigation, event }) => {
       state,
       date,
       time,
-    } = event.allEvent.find(
-      (el) => el.ticket_nft_id === navigation.getParam("id", "")
-    );
+    } = ticket.allTicket.find((el) => el.id === navigation.getParam("id", ""));
 
     setNftId(ticket_nft_id);
     setEventName(title);
@@ -129,8 +127,8 @@ const styles = StyleSheet.create({
     height: height * 0.95,
   },
 });
-const mapStateToProps = ({ event }) => ({
-  event,
+const mapStateToProps = ({ ticket }) => ({
+  ticket,
 });
 
 const mapDispatchToProps = {};
