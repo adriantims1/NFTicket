@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   HStack,
@@ -22,6 +22,7 @@ import { Ionicons, AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
+import moment from "moment";
 
 //Icon
 import CloseIcon from "../components/icons/CloseIcon";
@@ -30,30 +31,63 @@ import PlusIcon from "../components/icons/PlusIcon";
 
 //React Redux
 import { connect } from "react-redux";
-import { createNewEvent } from "../redux/actions/event";
+import { createNewEvent, modifyEvent } from "../redux/actions/event";
 
 const { height, width } = Dimensions.get("window");
 
-const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
+const SellTicketScreen = ({
+  navigation,
+  event,
+  createNewEvent,
+  profile,
+  modifyEvent,
+}) => {
   const [images, setImages] = useState(["plus"]);
   const [imageIndex, setImageIndex] = useState(0);
-  const [eventName, setEventName] = useState(
-    navigation.getParam("eventName", "")
-  );
-  const [streetAddress, setStreetAddress] = useState(
-    navigation.getParam("streetAdress", "")
-  );
-  const [city, setCity] = useState(navigation.getParam("city", ""));
-  const [state, setState] = useState(navigation.getParam("state", ""));
-  const [zipCode, setZipCode] = useState(navigation.getParam("zipCode", ""));
-  const [dateTime, setDateTime] = useState(
-    navigation.getParam("dateTime", new Date())
-  );
-  const [quantity, setQuantity] = useState(navigation.getParam("quantity", 0));
-  const [price, setPrice] = useState(navigation.getParam("price", 0));
+  const [eventName, setEventName] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [dateTime, setDateTime] = useState(moment());
+  const [quantity, setQuantity] = useState(0);
+  const [price, setPrice] = useState(0);
   const [openTimePicker, setOpenTimePicker] = useState(false);
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    if (navigation.getParam("operation", "create") !== "create") {
+      const theEvent = event.allEvent.find(
+        (el) => el.id === navigation.getParam("id", "")
+      );
+      const {
+        event_price: price,
+        ticket_quantity: quantity,
+        street_address: street,
+        city,
+        state,
+        zipcode,
+        title,
+        date,
+        time,
+
+        images,
+        description,
+      } = theEvent;
+      setPrice(price);
+      setQuantity(quantity);
+      setStreet(street);
+      setCity(city);
+      setState(state);
+      setZipCode(zipcode);
+      setEventName(title);
+      setDateTime(moment(`${date} ${time}`));
+      setDescription(description);
+      setImages(["plus", ...images]);
+      setImageIndex(["plus", ...images].length > 1 ? 1 : 0);
+    }
+  }, []);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -71,9 +105,7 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
   };
 
   const delImage = async () => {
-    let temp = images;
     if (images.length > 1) {
-      console.log(images);
       let temp = images;
       temp = arrayRemove(temp, imageIndex);
       setImages(temp);
@@ -91,13 +123,13 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
     return (n < 10 ? "0" : "") + n;
   }
 
-  const submitEvent = async () => {
+  const createEvent = async () => {
     try {
-      let tempDate = `${dateTime.getFullYear()}-${addZeroBefore(
-        dateTime.getMonth() + 1
-      )}-${addZeroBefore(dateTime.getDate())}`;
-      let tempTime = `${addZeroBefore(dateTime.getHours())}:${addZeroBefore(
-        dateTime.getMinutes()
+      let tempDate = `${dateTime.year()}-${addZeroBefore(
+        dateTime.month() + 1
+      )}-${addZeroBefore(dateTime.date())}`;
+      let tempTime = `${addZeroBefore(dateTime.hour())}:${addZeroBefore(
+        dateTime.minute()
       )}:00`;
 
       //Upload all images
@@ -105,7 +137,7 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
       if (images.length > 1) {
         for (const image of images.slice(1)) {
           const form = new FormData();
-          console.log(image);
+
           form.append("image", {
             uri: image,
             type: "image/jpg",
@@ -115,9 +147,8 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
             "https://api.imgbb.com/1/upload?key=6b1e8b98295c868b89d24134aa528527",
             form
           );
-          console.log("success", data.data.data.display_url);
+
           tempNewImageUrl = [...tempNewImageUrl, data.data.data.display_url];
-          console.log(tempNewImageUrl);
         }
         setImages(["push", ...tempNewImageUrl]);
       }
@@ -134,13 +165,63 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
         eventName,
         description,
         tempNewImageUrl,
-        streetAddress
+        street
       );
 
       navigation.goBack();
-    } catch (err) {
-      console.log("screen", err.response.data);
-    }
+    } catch (err) {}
+  };
+
+  const modifyEventFunc = async () => {
+    try {
+      let tempDate = `${dateTime.year()}-${addZeroBefore(
+        dateTime.month() + 1
+      )}-${addZeroBefore(dateTime.date())}`;
+      let tempTime = `${addZeroBefore(dateTime.hour())}:${addZeroBefore(
+        dateTime.minute()
+      )}:00`;
+      //Upload all images
+      let tempNewImageUrl = [];
+      if (images.length > 1) {
+        for (const image of images.slice(1)) {
+          if (!image.startsWith("http")) {
+            const form = new FormData();
+
+            form.append("image", {
+              uri: image,
+              type: "image/jpg",
+              name: "image.jpg",
+            });
+            const data = await axios.post(
+              "https://api.imgbb.com/1/upload?key=6b1e8b98295c868b89d24134aa528527",
+              form
+            );
+
+            tempNewImageUrl = [...tempNewImageUrl, data.data.data.display_url];
+          } else {
+            tempNewImageUrl = [...tempNewImageUrl, image];
+          }
+        }
+        setImages(["push", ...tempNewImageUrl]);
+      }
+      //-----------------
+      modifyEvent(
+        profile.email,
+        city,
+        state,
+        zipCode,
+        tempDate,
+        tempTime,
+        quantity,
+        price,
+        eventName,
+        description,
+        tempNewImageUrl,
+        street,
+        navigation.getParam("id", "")
+      );
+      navigation.goBack();
+    } catch (err) {}
   };
 
   return (
@@ -174,7 +255,11 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
 
             <IconButton
               icon={<CheckmarkIcon color="black" />}
-              onPress={submitEvent}
+              onPress={
+                navigation.getParam("operation", "create") === "create"
+                  ? createEvent
+                  : modifyEventFunc
+              }
               variant="unstyled"
             ></IconButton>
           </HStack>
@@ -256,10 +341,7 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
           <FormControl>
             <Stack>
               <FormControl.Label>Street</FormControl.Label>
-              <Input
-                value={streetAddress}
-                onChangeText={(text) => setStreetAddress(text)}
-              />
+              <Input value={street} onChangeText={(text) => setStreet(text)} />
             </Stack>
           </FormControl>
           <FormControl>
@@ -288,9 +370,9 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
           <FormControl>
             <Stack>
               <FormControl.Label>Date</FormControl.Label>
-              <Text>{`${dateTime.getFullYear()}-${addZeroBefore(
-                dateTime.getMonth() + 1
-              )}-${addZeroBefore(dateTime.getDate())}`}</Text>
+              <Text>{`${dateTime.year()}-${addZeroBefore(
+                dateTime.month() + 1
+              )}-${addZeroBefore(dateTime.date())}`}</Text>
               <ActionButton
                 text="Pick Date"
                 onPress={() => {
@@ -300,11 +382,11 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
               {openDatePicker ? (
                 <RNDateTimePicker
                   mode="date"
-                  value={dateTime}
+                  value={dateTime.toDate()}
                   onChange={(event, currDate) => {
                     const test = currDate;
                     setOpenDatePicker(false);
-                    setDateTime(test);
+                    setDateTime(moment(test));
                   }}
                 />
               ) : null}
@@ -313,8 +395,8 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
           <FormControl>
             <Stack>
               <FormControl.Label>Time</FormControl.Label>
-              <Text>{`${addZeroBefore(dateTime.getHours())}:${addZeroBefore(
-                dateTime.getMinutes()
+              <Text>{`${addZeroBefore(dateTime.hours())}:${addZeroBefore(
+                dateTime.minutes()
               )}:00`}</Text>
               <ActionButton
                 text="Pick Time"
@@ -326,11 +408,11 @@ const SellTicketScreen = ({ navigation, event, createNewEvent, profile }) => {
                 <RNDateTimePicker
                   mode="time"
                   display="clock"
-                  value={dateTime}
+                  value={dateTime.toDate()}
                   onChange={(event, currDate) => {
                     const test = currDate;
                     setOpenTimePicker(false);
-                    setDateTime(test);
+                    setDateTime(moment(test));
                   }}
                 />
               ) : null}
@@ -388,6 +470,6 @@ const mapStateToProps = ({ event, profile }) => ({
   profile,
 });
 
-const mapDispatchToProps = { createNewEvent };
+const mapDispatchToProps = { createNewEvent, modifyEvent };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SellTicketScreen);

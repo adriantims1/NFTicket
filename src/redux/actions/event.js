@@ -75,7 +75,7 @@ export const createNewEvent = (
           event_price: price,
         }
       );
-      console.log(data.data);
+
       dispatch({
         type: UPLOAD_EVENT_SUCCESS,
         payload: {
@@ -83,7 +83,6 @@ export const createNewEvent = (
         },
       });
     } catch (err) {
-      console.log("reducer", err);
       dispatch({
         type: UPLOAD_EVENT_FAIL,
         payload: {
@@ -94,4 +93,59 @@ export const createNewEvent = (
   };
 };
 
-export const modifyEvent = () => {};
+export const modifyEvent = (
+  email,
+  city,
+  state,
+  zipCode,
+  date,
+  time,
+  quantity,
+  price,
+  title,
+  description,
+  images,
+  streetAddress,
+  eventId
+) => {
+  return async (dispatch, getEvent) => {
+    try {
+      dispatch({
+        type: UPLOAD_EVENT,
+      });
+      await axios.put(
+        `https://nfticket-backend.herokuapp.com/api/event/${eventId}/`,
+        {
+          vendor: email,
+          ticket_quantity: quantity,
+          title,
+          description,
+          images,
+          street_address: streetAddress,
+          city,
+          state,
+          zipcode: zipCode,
+          date,
+          time,
+          event_price: price,
+        }
+      );
+      const data = await axios.get(
+        "https://nfticket-backend.herokuapp.com/api/event/"
+      );
+      dispatch({
+        type: UPLOAD_EVENT_SUCCESS,
+        payload: {
+          allEvent: data.data,
+        },
+      });
+    } catch (err) {
+      dispatch({
+        type: UPLOAD_EVENT_FAIL,
+        payload: {
+          errorMessage: err.message,
+        },
+      });
+    }
+  };
+};

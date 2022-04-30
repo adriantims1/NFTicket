@@ -38,7 +38,6 @@ export const fetchProfile = (email) => {
         },
       });
     } catch (err) {
-      console.log("fetch profile error:", err);
       dispatch({
         type: FETCH_PROFILE_FAIL,
         payload: {
@@ -63,14 +62,7 @@ export const modifyProfile = (
       dispatch({
         type: MODIFY_PROFILE,
       });
-      console.log({
-        email,
-        first_name: firstName,
-        last_name: lastName,
-        avtar_url: avatarURL,
-        username,
-        is_seller: `${is_seller}`,
-      });
+
       await axios.put(
         `https://nfticket-backend.herokuapp.com/api/user/${email}/`,
         {
@@ -82,7 +74,6 @@ export const modifyProfile = (
           is_seller: `${is_seller}`,
         }
       );
-      console.log(avatarURL);
       dispatch({
         type: MODIFY_PROFILE_SUCCESS,
         payload: {
@@ -94,9 +85,7 @@ export const modifyProfile = (
           is_seller: `${is_seller}`,
         },
       });
-      console.log("success");
     } catch (err) {
-      console.log(err.message);
       dispatch({
         type: MODIFY_PROFILE_FAIL,
         payload: {
@@ -112,7 +101,6 @@ export const modifyPassword = (newPassword) => {
     try {
       await auth.currentUser.updatePassword(newPassword);
     } catch (err) {
-      console.log(error);
       dispatch({
         type: MODIFY_PROFILE_FAIL,
         payload: { errorMessage: error.message },

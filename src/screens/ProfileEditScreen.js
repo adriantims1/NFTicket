@@ -64,7 +64,6 @@ const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
         setAvatarURL(data.data.data.display_url);
 
         temp = data.data.data.display_url;
-        console.log("m", temp);
       }
       if (newPassword !== confirmPassword) {
         setHasError(true);
@@ -80,7 +79,7 @@ const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
         // modify profile
         const nameArray = name.split(" ");
         const [firstName, ...lastName] = nameArray;
-        console.log(temp);
+
         modifyProfile(
           email,
           firstName,
@@ -92,7 +91,6 @@ const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
       }
       navigation.goBack();
     } catch (err) {
-      console.log(err);
       setHasError(true);
       setErrorMessage("Incorrect Password");
     }
@@ -106,8 +104,6 @@ const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
       aspect: [4, 3],
       quality: 1,
     });
-
-    console.log(result);
 
     if (!result.cancelled) {
       setAvatarURL(result.uri);

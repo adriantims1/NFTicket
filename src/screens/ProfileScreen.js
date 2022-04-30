@@ -91,15 +91,16 @@ const ProfileScreen = ({ navigation, profile, ticket, event }) => {
           <FlatList
             data={
               tab
-                ? ticket.allTicket.filter((el) => !el.is_expired)
-                : ticket.allTicket.filter((el) => el.is_expired)
+                ? ticket.allTicket.filter((el) => !el.ticket.is_expired)
+                : ticket.allTicket.filter((el) => el.ticket.is_expired)
             }
             renderItem={({ item }) => {
-              const { title, date, time, id } = item;
+              const { title, date, time } = item;
               const dateMoment = moment(
                 `${date} ${time}`,
                 "YYYY-MM-DD hh:mm:ss"
               );
+
               const monthNames = [
                 "January",
                 "February",
@@ -117,7 +118,7 @@ const ProfileScreen = ({ navigation, profile, ticket, event }) => {
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate("TicketDetail", { id });
+                    navigation.navigate("TicketDetail", { id: item.ticket.id });
                   }}
                 >
                   <BigTicket

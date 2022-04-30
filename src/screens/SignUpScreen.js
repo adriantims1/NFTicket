@@ -36,7 +36,6 @@ const LoginScreen = ({ navigation }) => {
         setPassword(passwordInitial);
         handleSignUp(passwordInitial);
       } else {
-        console.log(passwordInitial, passwordVerify);
         alert("Password does not match!");
         return;
       }
@@ -44,12 +43,10 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleSignUp = (password) => {
-    console.log(password);
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        console.log("Registered with " + user.email);
       })
       .catch((error) => console.log(error, email));
   };

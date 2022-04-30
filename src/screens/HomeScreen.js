@@ -52,7 +52,6 @@ const HomeScreen = ({
             </Text>
           </VStack>
           <Avatar
-            bg="yellow.500"
             alignSelf="center"
             size="md"
             source={{
@@ -71,10 +70,12 @@ const HomeScreen = ({
         <Box mt={4}>
           <FlatList
             data={ticket.allTicket.filter((el) => !el.is_expired)}
-            keyExtractor={(item, index) => item.ticket.id}
+            keyExtractor={(item, index) => {
+              return item.ticket?.id || index + 100;
+            }}
             horizontal={true}
             renderItem={({ item }) => {
-              const { title, date, time, id } = item;
+              const { title, date, time } = item;
               const dateMoment = moment(
                 `${date} ${time}`,
                 "YYYY-MM-DD hh:mm:ss"
@@ -97,7 +98,7 @@ const HomeScreen = ({
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("TicketDetail", {
-                      id,
+                      id: item.ticket.id,
                     });
                   }}
                 >

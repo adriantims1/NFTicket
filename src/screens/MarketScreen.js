@@ -96,16 +96,7 @@ const MarketScreen = ({ navigation, getEvent, event }) => {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("EventDetail", {
-                      imageURL: item.images /*array of images*/,
-                      title: item.title,
-                      venue: `${item.street_address}, ${item.city} ${item.state} ${item.zipcode}`,
-                      date: `${date.date()} ${
-                        monthNames[date.month()]
-                      } ${date.year()} - ${item.time}`,
-                      price: item.event_price,
-                      description: item.description,
-                      id: item.ticket_nft_id,
-                      vendor: item.vendor,
+                      id: item.id,
                     });
                   }}
                 >

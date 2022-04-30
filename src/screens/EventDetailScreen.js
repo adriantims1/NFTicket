@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { HStack, IconButton, Text, Box, ScrollView } from "native-base";
+import {
+  HStack,
+  IconButton,
+  Text,
+  Box,
+  ScrollView,
+  VStack,
+  Modal,
+  Spinner,
+} from "native-base";
 import { StyleSheet, Dimensions } from "react-native";
+import moment from "moment";
 
 //Redux
 import { connect } from "react-redux";
+import { buyTicketFromEventManager } from "../redux/actions/ticket";
 
 //Icon
 import BackIcon from "../components/icons/BackIcon";
@@ -18,10 +29,101 @@ import ActionButton from "../components/buttons/ActionButton";
 
 const { height, width } = Dimensions.get("window");
 
-const EventDetailScreen = ({ navigation, event, profile }) => {
+const EventDetailScreen = ({
+  navigation,
+  event,
+  profile,
+  buyTicketFromEventManager,
+  ticket,
+}) => {
   // const { imageURL, title, venue, date, price, description } = route.params;
+  const [title, setTitle] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [nftId, setNftId] = useState(null);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [price, setPrice] = useState(0);
+  const [description, setDescription] = useState("");
+  const [images, setImages] = useState([]);
+  const [vendor, setVendor] = useState("");
+  const [id, setId] = useState(null);
+  useEffect(() => {
+    const theEvent = event.allEvent.find(
+      (el) => el.id === navigation.getParam("id", "")
+    );
+    const {
+      event_price: price,
+      ticket_nft_id: nftId,
+      street_address: street,
+      city,
+      state,
+      zipcode,
+      title,
+      date,
+      time,
+      vendor,
+      images,
+      description,
+      id,
+    } = theEvent;
+    setPrice(price);
+    setNftId(nftId);
+    setStreet(street);
+    setCity(city);
+    setState(state);
+    setZipcode(zipcode);
+    setTitle(title);
+    setDate(date);
+    setTime(time);
+    setVendor(vendor);
+    setDescription(description);
+    setImages(images);
+    setId(id);
+  }, []);
+
+  const formatDate = () => {
+    const dateMoment = moment(date);
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return `${dateMoment.date()} ${
+      monthNames[dateMoment.month()]
+    } ${dateMoment.year()} `;
+  };
+
+  const formatTime = () => {
+    const timeMoment = moment(`${date} ${time}`);
+    const suffix = timeMoment.hour() >= 12 ? "PM" : "AM";
+    return `${
+      ((timeMoment.hour() + 11) % 12) + 1
+    }:${timeMoment.minute()} ${suffix}`;
+  };
   return (
     <SafeAreaView>
+      {ticket.isBuying ? (
+        <Modal isOpen={ticket.isBuying}>
+          <Modal.Content>
+            <Modal.Body justifyContent={"center"} alignItems="center">
+              <Text fontSize="lg">Please Wait</Text>
+              <Spinner size="lg" mt={4}></Spinner>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+      ) : null}
       <Box style={styles.container} mt={4}>
         {/* ----- Navigator ----- */}
         <HStack alignItems="center" justifyContent="space-between">
@@ -33,49 +135,73 @@ const EventDetailScreen = ({ navigation, event, profile }) => {
             variant="unstyled"
           ></IconButton>
           <Text fontWeight={700} fontSize="lg">
-            {`ID ${navigation.getParam("id", "")}`}
+            ID {nftId}
           </Text>
         </HStack>
         {/* ------------------ */}
         {/* ----- Carousel ----- */}
-        <CarouselCard data={navigation.getParam("imageURL", [])} />
+        <CarouselCard data={images} />
         {/* ------------------ */}
         {/* ----- Detail ----- */}
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text fontSize="2xl" fontWeight={700} mb={2}>
-            {navigation.getParam("title", "")}
+            {title}
           </Text>
           <HStack mb={2}>
             <PinIcon color="black" />
             <Text ml={2} fontWeight={700} fontSize="md">
-              {navigation.getParam("venue", "")}
+              {`${street}, ${city} ${state} ${zipcode}`}
             </Text>
           </HStack>
           <HStack mb={2}>
             <CalendarIcon color="black" />
             <Text ml={2} fontWeight={700} fontSize="md">
-              {navigation.getParam("date", "")}
+              {`${formatDate()} - ${formatTime()}`}
             </Text>
           </HStack>
           <HStack mb={2}>
             <AlgorandIcon color="black" />
             <Text ml={2} fontWeight={700} fontSize="md">
-              {navigation.getParam("price", "")}
+              {price}
             </Text>
           </HStack>
           <Text fontWeight={700} fontSize="md">
-            {navigation.getParam("description", "")}
+            {description}
           </Text>
         </ScrollView>
         {/* ------------------ */}
 
-        {navigation.getParam("vendor", "") !== profile.email ? (
-          <HStack w="100%" justifyContent={"space-between"}>
-            <ActionButton text="Buy Ticket From Event Manager" width="45%" />
-            <ActionButton text="Buy Ticket From Secondary Market" width="45%" />
-          </HStack>
+        {vendor !== profile.email ? (
+          <VStack justifyContent={"center"} alignItems="center">
+            <Text>Buy Ticket From:</Text>
+            <HStack w="100%" justifyContent={"space-between"} mt={4}>
+              <ActionButton
+                text="Event Manager"
+                width="45%"
+                onPress={() => {
+                  buyTicketFromEventManager(id, profile.email);
+                }}
+              />
+              <ActionButton
+                text="Secondary Market"
+                width="45%"
+                onPress={() => {
+                  navigation.navigate("SecondaryMarket", { title, event: id });
+                }}
+              />
+            </HStack>
+          </VStack>
         ) : (
-          <ActionButton text="Modify Event" width="100%" />
+          <ActionButton
+            text="Modify Event"
+            width="100%"
+            onPress={() => {
+              navigation.navigate("SellTicket", {
+                operation: "modify",
+                id,
+              });
+            }}
+          />
         )}
       </Box>
     </SafeAreaView>
@@ -89,11 +215,14 @@ const styles = StyleSheet.create({
     height: height * 0.95,
   },
 });
-const mapStateToProps = ({ event, profile }) => ({
+const mapStateToProps = ({ event, profile, ticket }) => ({
   event,
   profile,
+  ticket,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  buyTicketFromEventManager,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventDetailScreen);
