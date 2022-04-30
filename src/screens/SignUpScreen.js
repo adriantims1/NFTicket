@@ -12,7 +12,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const { width, height } = Dimensions.get("window");
-const LoginScreen = ({ navigation }) => {
+const SignUpScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [passwordInitial, setPasswordInitial] = useState("");
@@ -22,8 +22,8 @@ const LoginScreen = ({ navigation }) => {
   const [securePassword2, setSecurePassword2] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user && auth.user.emailVerified) {
         navigation.navigate("Home");
       }
     });
@@ -44,14 +44,18 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleSignUp = (password) => {
-    console.log(password);
+    console.log("Handle Sign Up Called");
     auth
       .createUserWithEmailAndPassword(email, password)
+      .catch(error => alert(error.message))
       .then((userCredentials) => {
-        const user = userCredentials.user;
-        console.log("Registered with " + user.email);
-      })
-      .catch((error) => console.log(error, email));
+        console.log("Registered with " + userCredentials.user.email);
+        userCredentials.user.sendEmailVerification().then(function () {
+          auth.signOut();
+          navigation.navigate("Login");
+        }).catch(error=> alert(error));
+      });
+    
   };
 
   return (
@@ -166,4 +170,4 @@ const LoginScreen = ({ navigation }) => {
   );
 };
 
-export default LoginScreen;
+export default SignUpScreen;

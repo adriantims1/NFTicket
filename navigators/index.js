@@ -19,6 +19,7 @@ import SellTicketScreen from "../src/screens/SellTicketScreen";
 //Auth Screen
 import SignUpScreen from "../src/screens/SignUpScreen";
 import LoginScreen from "../src/screens/LoginScreen";
+import ResetPasswordScreen from "../src/screens/ResetPasswordScreen";
 
 //Navigation Icons
 import HomeIcon from "../src/components/icons/HomeIcon";
@@ -85,6 +86,7 @@ const stack = createStackNavigator(
   {
     Signup: SignUpScreen,
     Login: LoginScreen,
+    ResetPassword: ResetPasswordScreen,
     Home: tab,
     TicketDetail: TicketDetailScreen,
     EventDetail: EventDetailScreen,
