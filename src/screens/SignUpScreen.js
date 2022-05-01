@@ -36,7 +36,6 @@ const SignUpScreen = ({ navigation }) => {
         setPassword(passwordInitial);
         handleSignUp(passwordInitial);
       } else {
-        console.log(passwordInitial, passwordVerify);
         alert("Password does not match!");
         return;
       }
@@ -44,11 +43,13 @@ const SignUpScreen = ({ navigation }) => {
   };
 
   const handleSignUp = (password) => {
-    console.log("Handle Sign Up Called");
+
+
     auth
       .createUserWithEmailAndPassword(email, password)
       .catch(error => alert(error.message))
       .then((userCredentials) => {
+
         console.log("Registered with " + userCredentials.user.email);
         userCredentials.user.sendEmailVerification().then(function () {
           auth.signOut();
@@ -56,6 +57,11 @@ const SignUpScreen = ({ navigation }) => {
         }).catch(error=> alert(error));
       });
     
+
+        const user = userCredentials.user;
+      })
+      .catch((error) => console.log(error, email));
+
   };
 
   return (

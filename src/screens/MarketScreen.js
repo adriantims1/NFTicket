@@ -17,7 +17,6 @@ import { connect } from "react-redux";
 
 const MarketScreen = ({ navigation, getEvent, event }) => {
   const [search, setSearch] = useState("");
-  const [events, setEvents] = useState(event.allEvent);
 
   return (
     <SafeAreaView>
@@ -47,7 +46,7 @@ const MarketScreen = ({ navigation, getEvent, event }) => {
         </Box>
         {/* ------------------ */}
         {/* ----- Sort Tabs ----- */}
-        <HStack justifyContent={"space-evenly"} mt={4}>
+        {/* <HStack justifyContent={"space-evenly"} mt={4}>
           <Button
             variant="unstyled"
             _text={{ fontWeight: 600, fontSize: "sm" }}
@@ -60,7 +59,7 @@ const MarketScreen = ({ navigation, getEvent, event }) => {
           >
             Sort
           </Button>
-        </HStack>
+        </HStack> */}
         {/* ------------------ */}
         {/* ----- Market ----- */}
         <Box h="100%" flex={1}>
@@ -73,7 +72,7 @@ const MarketScreen = ({ navigation, getEvent, event }) => {
               flexGrow: 1,
             }}
             numColumns={2}
-            data={events}
+            data={event.allEvent}
             renderItem={({ item }) => {
               const date = moment(
                 `${item.date} ${item.time}`,
@@ -97,15 +96,7 @@ const MarketScreen = ({ navigation, getEvent, event }) => {
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("EventDetail", {
-                      imageURL: item.images /*array of images*/,
-                      title: item.title,
-                      venue: `${item.street_address}, ${item.city} ${item.state} ${item.zipcode}`,
-                      date: `${date.date()} ${
-                        monthNames[date.month()]
-                      } ${date.year()} - ${item.time}`,
-                      price: 90.132152,
-                      description: item.description,
-                      id: item.ticket_nft_id,
+                      id: item.id,
                     });
                   }}
                 >

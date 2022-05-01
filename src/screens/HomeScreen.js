@@ -6,6 +6,7 @@ import {
   VStack,
   Avatar,
   FlatList,
+  ScrollView,
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect } from "react";
@@ -39,7 +40,7 @@ const HomeScreen = ({
 
   return (
     <SafeAreaView>
-      <Box style={styles.container}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* ----- Header ----- */}
         <HStack w="100%" justifyContent="space-between" mt={4}>
           <VStack>
@@ -51,14 +52,13 @@ const HomeScreen = ({
             </Text>
           </VStack>
           <Avatar
-            bg="yellow.500"
             alignSelf="center"
             size="md"
             source={{
               uri: profile.avatarURL,
             }}
           >
-            {`${profile.firstName[0].toUpperCase()} ${profile.lastName[0].toUpperCase()}`}
+            {`${profile.firstName[0]} ${profile.lastName[0]}`}
           </Avatar>
         </HStack>
         {/* ------------------ */}
@@ -70,14 +70,12 @@ const HomeScreen = ({
         <Box mt={4}>
           <FlatList
             data={ticket.allTicket.filter((el) => !el.is_expired)}
-            keyExtractor={(item, index) => item.id}
+            keyExtractor={(item, index) => {
+              return item.ticket?.id || index + 100;
+            }}
             horizontal={true}
             renderItem={({ item }) => {
-              const { nft_id } = item;
-
-              const { title, date, time } = event.allEvent.find(
-                (el) => el.ticket_nft_id === nft_id
-              );
+              const { title, date, time } = item;
               const dateMoment = moment(
                 `${date} ${time}`,
                 "YYYY-MM-DD hh:mm:ss"
@@ -100,7 +98,7 @@ const HomeScreen = ({
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate("TicketDetail", {
-                      id: nft_id,
+                      id: item.ticket.id,
                     });
                   }}
                 >
@@ -140,7 +138,7 @@ const HomeScreen = ({
           />
         </Box>
         {/* ------------------ */}
-      </Box>
+      </ScrollView>
     </SafeAreaView>
   );
 };

@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation, fetchProfile, profile }) => {
       .then((userCredentials) => {
         const user = userCredentials.user;
         fetchProfile(email);
-        // console.log(user);
+
       })
       .catch((error) => alert(error.message));
   };

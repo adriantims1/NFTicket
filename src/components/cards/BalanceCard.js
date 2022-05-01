@@ -1,25 +1,40 @@
 import { Button, HStack, Text, VStack } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
+import { connect } from "react-redux";
 import ActionButton from "../buttons/ActionButton";
-
+import QRCode from "react-native-qrcode-svg";
 import AlgorandInBalanceCardIcon from "../icons/AlgorandInBalanceCardIcon";
 import CardIcon from "../icons/CardIcon";
-const BalanceCard = () => {
+
+const BalanceCard = ({ profile }) => {
+  const [tab, setTab] = useState(true); /*true: Balance, false: Wallet hash*/
   return (
     <VStack p={5} mt={4} bgColor="white" style={styles.container}>
       <HStack justifyContent="space-between" mb={4}>
         <AlgorandInBalanceCardIcon />
-        <ActionButton text="Detail" width={100} />
+        <ActionButton
+          text={tab ? "Detail" : "Balance"}
+          width={100}
+          onPress={() => {
+            setTab(!tab);
+          }}
+        />
       </HStack>
       <HStack justifyContent="space-between" alignItems={"center"}>
-        <VStack>
-          <Text fontWeight={700} fontSize="lg" color="grey">
-            Balance
-          </Text>
-          <Text fontWeight={700} fontSize="lg">
-            12,543 ALGO
-          </Text>
+        <VStack w={"50%"}>
+          {tab ? (
+            <Text fontWeight={700} fontSize="lg" color="grey">
+              Balance
+            </Text>
+          ) : null}
+          {tab ? (
+            <Text fontWeight={700} fontSize={tab ? "lg" : "xs"}>
+              {profile.balance} ALGO
+            </Text>
+          ) : (
+            <QRCode value={profile.walletAddress} />
+          )}
         </VStack>
         <CardIcon />
       </HStack>
@@ -33,5 +48,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 });
+const mapStateToProps = ({ profile }) => ({
+  profile,
+});
 
-export default BalanceCard;
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BalanceCard);

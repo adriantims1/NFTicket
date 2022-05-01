@@ -18,16 +18,21 @@ const { height, width } = Dimensions.get("window");
 //Redux
 import { connect } from "react-redux";
 
-const TicketDetailScreen = ({ navigation, event }) => {
+const TicketDetailScreen = ({ navigation, ticket }) => {
   const [nftId, setNftId] = useState("");
   const [eventName, setEventName] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [onSale, setOnSale] = useState(false);
+  const [isExpired, setIsExpired] = useState(false);
+  const [event, setEvent] = useState(null);
   useEffect(() => {
+    const theTicket = ticket.allTicket.find(
+      (el) => el.ticket.id === navigation.getParam("id", "")
+    );
     const {
-      event_price,
       ticket_nft_id,
       title,
       description,
@@ -37,15 +42,16 @@ const TicketDetailScreen = ({ navigation, event }) => {
       state,
       date,
       time,
-    } = event.allEvent.find(
-      (el) => el.ticket_nft_id === navigation.getParam("id", "")
-    );
-
+    } = theTicket;
+    const { price, on_sale, is_expired, event } = theTicket.ticket;
     setNftId(ticket_nft_id);
     setEventName(title);
     setLocation(`${street_address}, ${city} ${state} ${zipcode}`);
-    setPrice(event_price);
+    setPrice(price);
     setDescription(description);
+    setOnSale(on_sale);
+    setEvent(event);
+    setIsExpired(is_expired);
     const dateMoment = moment(`${date} ${time}`, "YYYY-MM-DD hh:mm:ss");
     const monthNames = [
       "January",
@@ -116,7 +122,20 @@ const TicketDetailScreen = ({ navigation, event }) => {
           </Text>
         </ScrollView>
         {/* ------------------ */}
-        <ActionButton text="Resell" width="100%" />
+        <ActionButton
+          text="Resell"
+          width="100%"
+          onPress={() => {
+            navigation.navigate("ResellTicket", {
+              price,
+              onSale,
+              id: navigation.getParam("id", ""),
+              nftId,
+              isExpired,
+              event,
+            });
+          }}
+        />
       </Box>
     </SafeAreaView>
   );
@@ -129,8 +148,8 @@ const styles = StyleSheet.create({
     height: height * 0.95,
   },
 });
-const mapStateToProps = ({ event }) => ({
-  event,
+const mapStateToProps = ({ ticket }) => ({
+  ticket,
 });
 
 const mapDispatchToProps = {};

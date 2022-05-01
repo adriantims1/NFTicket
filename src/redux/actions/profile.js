@@ -20,6 +20,10 @@ export const fetchProfile = (email) => {
         `https://nfticket-backend.herokuapp.com/api/user/${email}/`
       );
 
+      const balance = await axios.get(
+        `https://nfticket-backend.herokuapp.com/api/user/balance/${email}/`
+      );
+
       dispatch({
         type: FETCH_PROFILE_SUCCESS,
         payload: {
@@ -30,10 +34,10 @@ export const fetchProfile = (email) => {
           walletAddress: data.data.wallet_addr,
           avatarURL: data.data.avtar_url,
           username: data.data.username,
+          balance: balance.data.Micro_Algos,
         },
       });
     } catch (err) {
-      console.log("fetch profile error:", err);
       dispatch({
         type: FETCH_PROFILE_FAIL,
         payload: {
@@ -44,26 +48,41 @@ export const fetchProfile = (email) => {
   };
 };
 
-export const modifyProfile = (email, firstName, lastName, avatarURL) => {
+export const modifyProfile = (
+  email,
+  firstName,
+  lastName,
+  avatarURL,
+  username,
+  is_seller
+) => {
   return async (dispatch) => {
     try {
       //Authentication
       dispatch({
         type: MODIFY_PROFILE,
       });
-      await axios.put(`https://nfticket-backend.herokuapp.com/api/${email}/`, {
-        email,
-        first_name: firstName,
-        last_name: lastName,
-        avtar_url: avatarURL,
-      });
-      dispatch({
-        type: MODIFY_PROFILE_SUCCESS,
-        payload: {
+
+      await axios.put(
+        `https://nfticket-backend.herokuapp.com/api/user/${email}/`,
+        {
           email,
           first_name: firstName,
           last_name: lastName,
           avtar_url: avatarURL,
+          username,
+          is_seller: `${is_seller}`,
+        }
+      );
+      dispatch({
+        type: MODIFY_PROFILE_SUCCESS,
+        payload: {
+          email,
+          firstName: firstName,
+          lastName: lastName,
+          avatarURL: avatarURL,
+          username,
+          is_seller: `${is_seller}`,
         },
       });
     } catch (err) {
@@ -82,7 +101,6 @@ export const modifyPassword = (newPassword) => {
     try {
       await auth.currentUser.updatePassword(newPassword);
     } catch (err) {
-      console.log(error);
       dispatch({
         type: MODIFY_PROFILE_FAIL,
         payload: { errorMessage: error.message },

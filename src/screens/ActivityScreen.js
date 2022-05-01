@@ -1,15 +1,51 @@
 import { StyleSheet, Dimensions, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box, Button, HStack, Fab, FlatList } from "native-base";
 import BigTicket from "../components/tickets/BigTicket";
 import PlusIcon from "../components/icons/PlusIcon";
-import { connect } from "react-redux";
+import moment from "moment";
 
 const { width, height } = Dimensions.get("window");
 
-const ActivityScreen = ({ navigation, profile }) => {
+//Redux
+import { connect } from "react-redux";
+import { fetchTransaction } from "../redux/actions/transaction";
+
+const ActivityScreen = ({
+  navigation,
+  profile,
+  ticket,
+  event,
+  fetchTransaction,
+  transaction,
+}) => {
   const [tab, useTab] = useState(true); //true: for sale tab, false: Sold tab
+
+  useEffect(() => {
+    fetchTransaction(profile.email);
+  }, []);
+
+  const formatDate = (date, time) => {
+    const dateMoment = moment(`${date} ${time}`, "YYYY-MM-DD hh:mm:ss");
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return `${dateMoment.date()} ${
+      monthNames[dateMoment.month()]
+    } ${dateMoment.year()} - ${time}`;
+  };
   return (
     <SafeAreaView>
       <Box style={styles.container} mt={4}>
@@ -40,17 +76,50 @@ const ActivityScreen = ({ navigation, profile }) => {
         {/* ----- Display ----- */}
         <Box alignItems={"center"} h="100%" flex={1} mt={4}>
           <FlatList
-            data={tab ? [1, 2, 3, 4, 5, 6, 7] : []}
-            renderItem={() => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("TicketDetail");
-                }}
-              >
-                <BigTicket />
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item, index) => item}
+            keyExtractor={(item, id) => id}
+            data={
+              tab
+                ? [
+                    ...ticket.allTicket
+                      .map((el) => ({ ...el, type: "ticket" }))
+                      .filter((el) => el.ticket.on_sale),
+                    ...event.allEvent
+                      .map((el) => ({ ...el, type: "event" }))
+                      .filter((el) => el.vendor === profile.email),
+                  ]
+                : transaction.allTransaction
+            }
+            renderItem={({ item }) => {
+              if (tab) {
+                const { date, time, title, type } = item;
+
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (type === "ticket")
+                        navigation.navigate("TicketDetail", {
+                          id: item.ticket.id,
+                        });
+                      else if (type === "event") {
+                        navigation.navigate("EventDetail", {
+                          id: item.id,
+                        });
+                      }
+                    }}
+                  >
+                    <BigTicket title={title} date={formatDate(date, time)} />
+                  </TouchableOpacity>
+                );
+              } else {
+                const { event } = item;
+                return (
+                  <BigTicket
+                    title={event.title}
+                    date={formatDate(event.date, event.time)}
+                  />
+                );
+              }
+            }}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               flexGrow: 1,
@@ -82,10 +151,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ profile }) => ({
+const mapStateToProps = ({ profile, event, ticket, transaction }) => ({
   profile,
+  event,
+  ticket,
+  transaction,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { fetchTransaction };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityScreen);

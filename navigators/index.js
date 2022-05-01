@@ -15,6 +15,8 @@ import TicketDetailScreen from "../src/screens/TicketDetailScreen";
 import EventDetailScreen from "../src/screens/EventDetailScreen";
 import ProfileEditScreen from "../src/screens/ProfileEditScreen";
 import SellTicketScreen from "../src/screens/SellTicketScreen";
+import ResellTicketScreen from "../src/screens/ResellTicketScreen";
+import SecondaryMarketScreen from "../src/screens/SecondaryMarketScreen";
 
 //Auth Screen
 import SignUpScreen from "../src/screens/SignUpScreen";
@@ -92,6 +94,8 @@ const stack = createStackNavigator(
     EventDetail: EventDetailScreen,
     ProfileEdit: ProfileEditScreen,
     SellTicket: SellTicketScreen,
+    ResellTicket: ResellTicketScreen,
+    SecondaryMarket: SecondaryMarketScreen,
   },
   {
     initialRouteName: "Login",
