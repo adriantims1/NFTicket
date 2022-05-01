@@ -11,7 +11,7 @@ import { fetchProfile } from "../redux/actions/profile";
 import { connect } from "react-redux";
 const { width, height } = Dimensions.get("window");
 
-const LoginScreen = ({ navigation, fetchProfile, profile }) => {
+const ResetPasswordScreen = ({ navigation, fetchProfile, profile }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [securePassword, setSecurePassword] = useState(false);
@@ -21,29 +21,27 @@ const LoginScreen = ({ navigation, fetchProfile, profile }) => {
       if (user && user.emailVerified) {
         await fetchProfile(user.email);
         navigation.replace("Home");
-      } else if (user && !user.emailVerified) {
-        alert("Verify Email");
       }
     });
     return unsubscribe;
   }, []);
 
-  const handleLogin = async () => {
+  const handleSendResetEmail = async () => {
+    console.log("Called handleSendResetEmail");
+    console.log(email);
     auth
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        fetchProfile(email);
-
-      })
-      .catch((error) => alert(error.message));
+        .sendPasswordResetEmail(email)
+        .then(() => {
+            alert("Sent Password Reset Email.");
+        })
+        .catch((error) => {alert(error.message)});
   };
 
   return (
     <SafeAreaView>
-      <Box w="90%" h={height} alignSelf={"center"} justifyContent={"center"}>
+      <Box w="90%" h={height / 2} alignSelf={"center"} justifyContent={"center"}>
         <Text fontWeight={700} fontSize="3xl">
-          Login
+          Reset Password
         </Text>
         <FormControl>
           <FormControl.Label>Email</FormControl.Label>
@@ -53,7 +51,7 @@ const LoginScreen = ({ navigation, fetchProfile, profile }) => {
             borderColor={"black"}
           ></Input>
         </FormControl>
-        <FormControl mb={4}>
+        {/* <FormControl mb={4}>
           <FormControl.Label>Password</FormControl.Label>
           <Input
             value={password}
@@ -75,50 +73,12 @@ const LoginScreen = ({ navigation, fetchProfile, profile }) => {
               />
             }
           ></Input>
-        </FormControl>
+        </FormControl> */}
         <ActionButton
-          text="Sign In"
+          text="Send Email"
           width=" 100%"
-          onPress={() => handleLogin()}
+          onPress={() => handleSendResetEmail()}
         />
-        <HStack justifyContent={"center"} mt={4}>
-          <TouchableOpacity>
-            <Text
-              onPress={() => {
-                navigation.navigate("ResetPassword");
-              }}
-            >Forgot Your Password? Reset</Text>
-          </TouchableOpacity>
-        </HStack>
-        <HStack mt={4} justifyContent={"space-evenly"}>
-          <Box
-            borderRadius={10}
-            borderWidth={1}
-            width={100}
-            p={2}
-            alignItems={"center"}
-          >
-            <GoogleIcon />
-          </Box>
-          <Box
-            borderRadius={10}
-            borderWidth={1}
-            width={100}
-            p={2}
-            alignItems={"center"}
-          >
-            <CoinbaseIcon />
-          </Box>
-        </HStack>
-        <HStack justifyContent={"center"} mt={4}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Signup");
-            }}
-          >
-            <Text>Don't have an account? Register</Text>
-          </TouchableOpacity>
-        </HStack>
       </Box>
     </SafeAreaView>
   );
@@ -130,4 +90,4 @@ const mapStateToProps = ({ profile }) => ({
 
 const mapDispatchToProps = { fetchProfile };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+export default ResetPasswordScreen;
