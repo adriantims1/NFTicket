@@ -10,11 +10,24 @@
     ],
     "name": "NFTicket",
     "slug": "NFTicket",
+    "description":"The app for your ticket needs",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
-    
+    ],
+    "orientation":"portrait",
+    "icon":"./assets/images/icon.png",
+    "splash":{
+      "image":"./assets/images/splash-screen.png",
+      "resizeMode":"contain",
+      "backgroundColr":"#ffffff"
+    },
+    "android":{
+      "adaptiveIcon":{
+        "foregroundImage":"./assets/images/adaptive-icon.png",
+        "backgroundColor":"#FFF"
+      }
+    }
   },
   "name": "NFTicket"
 }
