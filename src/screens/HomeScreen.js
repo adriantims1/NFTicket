@@ -53,7 +53,7 @@ const HomeScreen = ({
         setRefreshing(false);
       }}
       config={{ velocityThreshold: 0.01, directionalOffsetThreshold: 50 }}
-      style={{ flex: 1, zIndex: 10, backgroundColor: "black" }}
+      style={{ flex: 1, zIndex: 10 }}
     >
       <SafeAreaView>
         <ScrollView
