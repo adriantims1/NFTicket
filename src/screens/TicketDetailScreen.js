@@ -28,6 +28,9 @@ const TicketDetailScreen = ({ navigation, ticket }) => {
   const [onSale, setOnSale] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
   const [event, setEvent] = useState(null);
+  const [owner, setOwner] = useState("");
+  const [valid, setValid] = useState("");
+
   useEffect(() => {
     const theTicket = ticket.allTicket.find(
       (el) => el.ticket.id === navigation.getParam("id", "")
@@ -43,7 +46,9 @@ const TicketDetailScreen = ({ navigation, ticket }) => {
       date,
       time,
     } = theTicket;
-    const { price, on_sale, is_expired, event } = theTicket.ticket;
+    const { price, on_sale, is_expired, event, owner } = theTicket.ticket;
+
+    setOwner(owner);
     setNftId(ticket_nft_id);
     setEventName(title);
     setLocation(`${street_address}, ${city} ${state} ${zipcode}`);
@@ -52,6 +57,8 @@ const TicketDetailScreen = ({ navigation, ticket }) => {
     setOnSale(on_sale);
     setEvent(event);
     setIsExpired(is_expired);
+
+    setValid(date);
     const dateMoment = moment(`${date} ${time}`, "YYYY-MM-DD hh:mm:ss");
     const monthNames = [
       "January",
@@ -92,7 +99,7 @@ const TicketDetailScreen = ({ navigation, ticket }) => {
         </HStack>
         {/* ------------------ */}
         {/* ----- Ticket ----- */}
-        <DetailTicket />
+        <DetailTicket valid={valid} owner={owner} />
         {/* ------------------ */}
         {/* ----- Detail ----- */}
         <ScrollView showsVerticalScrollIndicator={false} mt={4}>
@@ -148,8 +155,9 @@ const styles = StyleSheet.create({
     height: height * 0.95,
   },
 });
-const mapStateToProps = ({ ticket }) => ({
+const mapStateToProps = ({ ticket, profile }) => ({
   ticket,
+  profile,
 });
 
 const mapDispatchToProps = {};

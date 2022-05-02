@@ -1,4 +1,12 @@
-import { Box, FormControl, HStack, Input, Text, Icon } from "native-base";
+import {
+  Box,
+  FormControl,
+  HStack,
+  Input,
+  Text,
+  Icon,
+  Button,
+} from "native-base";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Dimensions, TouchableOpacity } from "react-native";
@@ -14,7 +22,7 @@ const { width, height } = Dimensions.get("window");
 const LoginScreen = ({ navigation, fetchProfile, profile }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [securePassword, setSecurePassword] = useState(false);
+  const [securePassword, setSecurePassword] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -33,10 +41,10 @@ const LoginScreen = ({ navigation, fetchProfile, profile }) => {
       .signInWithEmailAndPassword(email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        fetchProfile(email);
 
+        fetchProfile(email);
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => alert("Invalid Authorization"));
   };
 
   return (
@@ -76,47 +84,30 @@ const LoginScreen = ({ navigation, fetchProfile, profile }) => {
             }
           ></Input>
         </FormControl>
-        <ActionButton
-          text="Sign In"
-          width=" 100%"
-          onPress={() => handleLogin()}
-        />
-        <HStack justifyContent={"center"} mt={4}>
+        <HStack justifyContent={"flex-end"} mb={4}>
           <TouchableOpacity>
             <Text
               onPress={() => {
                 navigation.navigate("ResetPassword");
               }}
-            >Forgot Your Password? Reset</Text>
+            >
+              Forgot Your Password? Reset
+            </Text>
           </TouchableOpacity>
         </HStack>
-        <HStack mt={4} justifyContent={"space-evenly"}>
-          <Box
-            borderRadius={10}
-            borderWidth={1}
-            width={100}
-            p={2}
-            alignItems={"center"}
-          >
-            <GoogleIcon />
-          </Box>
-          <Box
-            borderRadius={10}
-            borderWidth={1}
-            width={100}
-            p={2}
-            alignItems={"center"}
-          >
-            <CoinbaseIcon />
-          </Box>
-        </HStack>
+        <ActionButton
+          text="Log In"
+          width=" 100%"
+          onPress={() => handleLogin()}
+        />
+
         <HStack justifyContent={"center"} mt={4}>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("Signup");
             }}
           >
-            <Text>Don't have an account? Register</Text>
+            <Text>Don't have an account? Sign Up</Text>
           </TouchableOpacity>
         </HStack>
       </Box>

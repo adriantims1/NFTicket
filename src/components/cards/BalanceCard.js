@@ -14,7 +14,7 @@ const BalanceCard = ({ profile }) => {
       <HStack justifyContent="space-between" mb={4}>
         <AlgorandInBalanceCardIcon />
         <ActionButton
-          text={tab ? "Detail" : "Balance"}
+          text={tab ? "QR Code" : "Balance"}
           width={100}
           onPress={() => {
             setTab(!tab);

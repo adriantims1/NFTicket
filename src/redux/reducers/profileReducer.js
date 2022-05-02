@@ -5,6 +5,7 @@ import {
   MODIFY_PROFILE,
   MODIFY_PROFILE_SUCCESS,
   MODIFY_PROFILE_FAIL,
+  MODIFY_BALANCE,
 } from "../types/profile";
 
 const initialState = {
@@ -91,7 +92,11 @@ export default (state = initialState, { type, payload }) => {
         errorMessage: "",
         hasModifyError: "",
       };
-
+    case MODIFY_BALANCE:
+      return {
+        ...state,
+        balance: payload.balance,
+      };
     default:
       return state;
   }

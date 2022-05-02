@@ -1,4 +1,5 @@
 import axios from "axios";
+import { MODIFY_BALANCE } from "../types/profile";
 
 //Redux
 import {
@@ -12,6 +13,8 @@ import {
   FETCH_ON_SALE_TICKET_FAIL,
   FETCH_ON_SALE_TICKET_SUCCESS,
 } from "../types/ticket";
+
+import { getEvent } from "./event";
 
 export const getTicket = (email) => {
   return async (dispatch) => {
@@ -47,7 +50,12 @@ export const getTicket = (email) => {
   };
 };
 
-export const buyTicketFromEventManager = (eventId, buyerEmail) => {
+export const buyTicketFromEventManager = (
+  eventId,
+  buyerEmail,
+  success,
+  failure
+) => {
   return async (dispatch) => {
     try {
       dispatch({
@@ -60,6 +68,11 @@ export const buyTicketFromEventManager = (eventId, buyerEmail) => {
       const data = await axios.get(
         `https://nfticket-backend.herokuapp.com/api/user/ticket/${buyerEmail}/`
       );
+
+      const balance = await axios.get(
+        `https://nfticket-backend.herokuapp.com/api/user/balance/${buyerEmail}/`
+      );
+
       let newTickets = [];
       for (const ticket of data.data) {
         const event = await axios.get(
@@ -67,10 +80,16 @@ export const buyTicketFromEventManager = (eventId, buyerEmail) => {
         );
         newTickets.push({ ticket, ...event.data });
       }
+      dispatch(getEvent());
       dispatch({
         type: BUY_TICKET_SUCCESS,
         payload: { allTicket: newTickets },
       });
+      dispatch({
+        type: MODIFY_BALANCE,
+        payload: { balance: balance.data.Micro_Algos },
+      });
+      success();
     } catch (err) {
       dispatch({
         type: BUY_TICKET_FAIL,
@@ -78,13 +97,20 @@ export const buyTicketFromEventManager = (eventId, buyerEmail) => {
           errMessage: err.message,
         },
       });
+      failure();
     }
   };
 };
 
-export const buyTicketFromSecondaryMarket = (buyerEmail, ticketId) => {
+export const buyTicketFromSecondaryMarket = (
+  buyerEmail,
+  ticketId,
+  success,
+  failure
+) => {
   return async (dispatch) => {
     try {
+      console.log("buy ticket called");
       dispatch({ type: BUY_TICKET });
 
       await axios.patch(
@@ -103,17 +129,26 @@ export const buyTicketFromSecondaryMarket = (buyerEmail, ticketId) => {
         );
         newTickets.push({ ticket, ...event.data });
       }
+      const balance = await axios.get(
+        `https://nfticket-backend.herokuapp.com/api/user/balance/${buyerEmail}/`
+      );
       dispatch({
         type: BUY_TICKET_SUCCESS,
         payload: { allTicket: newTickets },
       });
+      dispatch({
+        type: MODIFY_BALANCE,
+        payload: { balance: balance.data.Micro_Algos },
+      });
+      success();
     } catch (err) {
       dispatch({
         type: BUY_TICKET_FAIL,
         payload: {
-          errMessage: err.message,
+          errMessage: "Insufficient Funds",
         },
       });
+      failure();
     }
   };
 };

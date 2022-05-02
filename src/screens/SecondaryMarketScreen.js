@@ -4,6 +4,7 @@ import {
   HStack,
   IconButton,
   Modal,
+  Alert,
   FormControl,
   ScrollView,
   Text,
@@ -31,7 +32,15 @@ import ActionButton from "../components/buttons/ActionButton";
 
 const { height, width } = Dimensions.get("window");
 
-const SecondaryMarketScreen = ({ navigation, getOnSaleTicket, ticket }) => {
+const SecondaryMarketScreen = ({
+  navigation,
+  getOnSaleTicket,
+  ticket,
+  profile,
+  buyTicketFromSecondaryMarket,
+}) => {
+  const [successBuying, setSuccessBuying] = useState(false);
+  const [buyingError, setBuyingError] = useState(false);
   useEffect(() => {
     getOnSaleTicket(navigation.getParam("event", ""));
   }, []);
@@ -57,17 +66,6 @@ const SecondaryMarketScreen = ({ navigation, getOnSaleTicket, ticket }) => {
   };
   return (
     <SafeAreaView>
-      {/* {ticket.isBuying ? (
-        <Modal isOpen={ticket.isBuying}>
-          <Modal.Content>
-            <Modal.Body justifyContent={"center"} alignItems="center">
-              <Text fontSize="lg">Please Wait</Text>
-              <Spinner size="lg" mt={4}></Spinner>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
-      ) : null} */}
-
       {/* ----- Navigator ----- */}
       <Box style={styles.container} mt={4}>
         <HStack alignItems="center" justifyContent="space-between">
@@ -92,28 +90,112 @@ const SecondaryMarketScreen = ({ navigation, getOnSaleTicket, ticket }) => {
           Tickets Available:
         </Text>
         <Box alignItems={"center"} h="100%" flex={1} mt={4}>
-          <FlatList
-            data={ticket.onSaleTicket}
-            keyExtractor={(item, id) => item.ticket.id}
-            renderItem={({ item }) => (
-              <VStack>
-                <BigTicket
-                  title={item.title}
-                  date={formatDate(item.date, item.time)}
-                />
-                <ActionButton
-                  text="Buy"
-                  onPress={() => {
-                    buyTicketFromSecondaryMarket(profile.email, item.ticket.id);
-                  }}
-                  width="100%"
-                />
-              </VStack>
-            )}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ flexGrow: 1 }}
-          />
+          {ticket.onSaleTicket.filter((el) => el.ticket.owner !== profile.email)
+            .length > 0 ? (
+            <FlatList
+              data={ticket.onSaleTicket.filter(
+                (el) => el.ticket.owner !== profile.email
+              )}
+              keyExtractor={(item, id) => item.ticket.id}
+              renderItem={({ item }) => (
+                <VStack>
+                  <BigTicket
+                    title={item.title}
+                    date={formatDate(item.date, item.time)}
+                  />
+                  <ActionButton
+                    text="Buy"
+                    onPress={() => {
+                      setSuccessBuying(false);
+                      setBuyingError(false);
+                      buyTicketFromSecondaryMarket(
+                        profile.email,
+                        item.ticket.id,
+                        () => {
+                          console.log("success");
+                          setSuccessBuying(true);
+                        } /*success*/,
+                        () => {
+                          console.log("success");
+                          setBuyingError(true);
+                        } /*failure*/
+                      );
+                    }}
+                    width="100%"
+                  />
+                </VStack>
+              )}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ flexGrow: 1 }}
+            />
+          ) : (
+            <Text>No Ticket Found</Text>
+          )}
         </Box>
+        {ticket.isBuying ? (
+          <Modal isOpen={ticket.isBuying}>
+            <Modal.Content>
+              <Modal.Body justifyContent={"center"} alignItems="center">
+                <Text fontSize="lg">Please Wait</Text>
+                <Spinner size="lg" mt={4}></Spinner>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+        ) : null}
+        {buyingError ? (
+          <Alert w="100%" status="error">
+            <VStack space={2} flexShrink={1} w="100%">
+              <HStack flexShrink={1} space={2} justifyContent="space-between">
+                <HStack space={2} flexShrink={1}>
+                  <Alert.Icon mt="1" />
+                  <Text fontSize="md" color="coolGray.800">
+                    Insufficient Funds
+                  </Text>
+                </HStack>
+                <IconButton
+                  variant="unstyled"
+                  _focus={{
+                    borderWidth: 0,
+                  }}
+                  icon={<CloseIcon size="3" />}
+                  _icon={{
+                    color: "coolGray.600",
+                  }}
+                  onPress={() => {
+                    setBuyingError(false);
+                  }}
+                />
+              </HStack>
+            </VStack>
+          </Alert>
+        ) : null}
+        {successBuying ? (
+          <Alert w="100%" status="success">
+            <VStack space={2} flexShrink={1} w="100%">
+              <HStack flexShrink={1} space={2} justifyContent="space-between">
+                <HStack space={2} flexShrink={1}>
+                  <Alert.Icon mt="1" />
+                  <Text fontSize="md" color="coolGray.800">
+                    Ticket Bought
+                  </Text>
+                </HStack>
+                <IconButton
+                  variant="unstyled"
+                  _focus={{
+                    borderWidth: 0,
+                  }}
+                  icon={<CloseIcon size="3" />}
+                  _icon={{
+                    color: "coolGray.600",
+                  }}
+                  onPress={() => {
+                    setSuccessBuying(false);
+                  }}
+                />
+              </HStack>
+            </VStack>
+          </Alert>
+        ) : null}
       </Box>
       {/* ------------------ */}
     </SafeAreaView>
@@ -130,7 +212,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ profile, ticket }) => ({ profile, ticket });
 
-const mapDispatchToProps = { getOnSaleTicket };
+const mapDispatchToProps = { getOnSaleTicket, buyTicketFromSecondaryMarket };
 
 export default connect(
   mapStateToProps,

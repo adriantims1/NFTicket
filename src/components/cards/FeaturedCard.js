@@ -7,7 +7,7 @@ const FeaturedCard = ({ imageURL, title }) => {
       <Box w={150} h={200} bgColor="white" borderRadius={20}>
         <Image
           source={{
-            uri: "https://wallpaperaccess.com/full/317501.jpg",
+            uri: imageURL,
           }}
           resizeMode="cover"
           alt="alternate text"
@@ -28,13 +28,11 @@ const FeaturedCard = ({ imageURL, title }) => {
         borderRadius={20}
       ></Box>
       <Box w={150} h={200} p={4} justifyContent="flex-end">
-        <VStack>
+        <VStack w="75%">
           <Text color="white" fontSize={"lg"} fontWeight={600}>
-            Rock
+            {title}
           </Text>
-          <Text color="white" fontSize={"lg"} fontWeight={600}>
-            Climbing
-          </Text>
+
           <Text color="white" fontSize={"xs"} fontWeight={200}>
             California
           </Text>

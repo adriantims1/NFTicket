@@ -12,6 +12,7 @@ import {
   ZStack,
   Image,
   Text,
+  Select,
   Spinner,
   TextArea,
 } from "native-base";
@@ -23,6 +24,7 @@ import * as ImagePicker from "expo-image-picker";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
 import moment from "moment";
+import UsaState from "usa-states";
 
 //Icon
 import CloseIcon from "../components/icons/CloseIcon";
@@ -165,10 +167,11 @@ const SellTicketScreen = ({
         eventName,
         description,
         tempNewImageUrl,
-        street
+        street,
+        () => {
+          navigation.goBack();
+        }
       );
-
-      navigation.goBack();
     } catch (err) {}
   };
 
@@ -218,9 +221,11 @@ const SellTicketScreen = ({
         description,
         tempNewImageUrl,
         street,
-        navigation.getParam("id", "")
+        navigation.getParam("id", ""),
+        () => {
+          navigation.goBack();
+        }
       );
-      navigation.goBack();
     } catch (err) {}
   };
 
@@ -353,7 +358,19 @@ const SellTicketScreen = ({
           <FormControl>
             <Stack>
               <FormControl.Label>State</FormControl.Label>
-              <Input value={state} onChangeText={(text) => setState(text)} />
+              <Select
+                selectedValue={state}
+                placeholder="Choose State"
+                onValueChange={(newValue) => {
+                  setState(newValue);
+                }}
+              >
+                {new UsaState.UsaStates()
+                  .arrayOf("abbreviations")
+                  .map((el, id) => (
+                    <Select.Item label={el} value={el} key={el} />
+                  ))}
+              </Select>
             </Stack>
           </FormControl>
           <FormControl>
@@ -425,6 +442,9 @@ const SellTicketScreen = ({
                 value={`${quantity}`}
                 onChangeText={(text) => setQuantity(text)}
                 keyboardType="numeric"
+                isDisabled={
+                  navigation.getParam("operation", "create") !== "create"
+                }
               />
             </Stack>
           </FormControl>

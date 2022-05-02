@@ -30,20 +30,27 @@ const ResetPasswordScreen = ({ navigation, fetchProfile, profile }) => {
     console.log("Called handleSendResetEmail");
     console.log(email);
     auth
-        .sendPasswordResetEmail(email)
-        .then(() => {
-            alert("Sent Password Reset Email.");
-        })
-        .catch((error) => {alert(error.message)});
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        alert("Sent Password Reset Email.");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   };
 
   return (
     <SafeAreaView>
-      <Box w="90%" h={height / 2} alignSelf={"center"} justifyContent={"center"}>
+      <Box
+        w="90%"
+        h={height / 2}
+        alignSelf={"center"}
+        justifyContent={"center"}
+      >
         <Text fontWeight={700} fontSize="3xl">
           Reset Password
         </Text>
-        <FormControl>
+        <FormControl mb={4}>
           <FormControl.Label>Email</FormControl.Label>
           <Input
             value={email}

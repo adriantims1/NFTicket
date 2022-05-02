@@ -9,6 +9,8 @@ import {
   VStack,
   Modal,
   Spinner,
+  Alert,
+  CloseIcon,
 } from "native-base";
 import { StyleSheet, Dimensions } from "react-native";
 import moment from "moment";
@@ -50,6 +52,9 @@ const EventDetailScreen = ({
   const [images, setImages] = useState([]);
   const [vendor, setVendor] = useState("");
   const [id, setId] = useState(null);
+  const [buyingError, setBuyingError] = useState(false);
+  const [puchaseSuccessful, setPurchaseSuccessful] = useState(false);
+
   useEffect(() => {
     const theEvent = event.allEvent.find(
       (el) => el.id === navigation.getParam("id", "")
@@ -68,6 +73,7 @@ const EventDetailScreen = ({
       images,
       description,
       id,
+      tickets_remaining,
     } = theEvent;
     setPrice(price);
     setNftId(nftId);
@@ -114,16 +120,6 @@ const EventDetailScreen = ({
   };
   return (
     <SafeAreaView>
-      {ticket.isBuying ? (
-        <Modal isOpen={ticket.isBuying}>
-          <Modal.Content>
-            <Modal.Body justifyContent={"center"} alignItems="center">
-              <Text fontSize="lg">Please Wait</Text>
-              <Spinner size="lg" mt={4}></Spinner>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
-      ) : null}
       <Box style={styles.container} mt={4}>
         {/* ----- Navigator ----- */}
         <HStack alignItems="center" justifyContent="space-between">
@@ -179,8 +175,24 @@ const EventDetailScreen = ({
                 text="Event Manager"
                 width="45%"
                 onPress={() => {
-                  buyTicketFromEventManager(id, profile.email);
+                  setPurchaseSuccessful(false);
+                  setBuyingError(false);
+                  buyTicketFromEventManager(
+                    id,
+                    profile.email,
+                    () => {
+                      setPurchaseSuccessful(true);
+                    } /*success*/,
+                    () => {
+                      setBuyingError(true);
+                    }
+                  ); /*failure*/
                 }}
+                isDisabled={
+                  event.allEvent.find(
+                    (el) => el.id === navigation.getParam("id", "")
+                  ).tickets_remaining === 0
+                }
               />
               <ActionButton
                 text="Secondary Market"
@@ -203,6 +215,70 @@ const EventDetailScreen = ({
             }}
           />
         )}
+        {ticket.isBuying ? (
+          <Modal isOpen={ticket.isBuying}>
+            <Modal.Content>
+              <Modal.Body justifyContent={"center"} alignItems="center">
+                <Text fontSize="lg">Please Wait</Text>
+                <Spinner size="lg" mt={4}></Spinner>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
+        ) : null}
+        {buyingError ? (
+          <Alert w="100%" status="error">
+            <VStack space={2} flexShrink={1} w="100%">
+              <HStack flexShrink={1} space={2} justifyContent="space-between">
+                <HStack space={2} flexShrink={1}>
+                  <Alert.Icon mt="1" />
+                  <Text fontSize="md" color="coolGray.800">
+                    Insufficient Funds
+                  </Text>
+                </HStack>
+                <IconButton
+                  variant="unstyled"
+                  _focus={{
+                    borderWidth: 0,
+                  }}
+                  icon={<CloseIcon size="3" />}
+                  _icon={{
+                    color: "coolGray.600",
+                  }}
+                  onPress={() => {
+                    setBuyingError(false);
+                  }}
+                />
+              </HStack>
+            </VStack>
+          </Alert>
+        ) : null}
+        {puchaseSuccessful ? (
+          <Alert w="100%" status="success">
+            <VStack space={2} flexShrink={1} w="100%">
+              <HStack flexShrink={1} space={2} justifyContent="space-between">
+                <HStack space={2} flexShrink={1}>
+                  <Alert.Icon mt="1" />
+                  <Text fontSize="md" color="coolGray.800">
+                    Purchase Successful
+                  </Text>
+                </HStack>
+                <IconButton
+                  variant="unstyled"
+                  _focus={{
+                    borderWidth: 0,
+                  }}
+                  icon={<CloseIcon size="3" />}
+                  _icon={{
+                    color: "coolGray.600",
+                  }}
+                  onPress={() => {
+                    setPurchaseSuccessful(false);
+                  }}
+                />
+              </HStack>
+            </VStack>
+          </Alert>
+        ) : null}
       </Box>
     </SafeAreaView>
   );

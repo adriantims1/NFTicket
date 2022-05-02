@@ -15,9 +15,9 @@ import moment from "moment";
 //redux
 import { connect } from "react-redux";
 
-const MarketScreen = ({ navigation, getEvent, event }) => {
+const MarketScreen = ({ navigation, event }) => {
   const [search, setSearch] = useState("");
-
+  const [events, setEvents] = useState(event.allEvent);
   return (
     <SafeAreaView>
       <Box style={styles.container}>
@@ -72,7 +72,7 @@ const MarketScreen = ({ navigation, getEvent, event }) => {
               flexGrow: 1,
             }}
             numColumns={2}
-            data={event.allEvent}
+            data={events}
             renderItem={({ item }) => {
               const date = moment(
                 `${item.date} ${item.time}`,

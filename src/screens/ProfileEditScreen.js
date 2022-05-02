@@ -31,8 +31,14 @@ import { format } from "date-fns";
 
 const { height, width } = Dimensions.get("window");
 
-const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
-  const [name, setName] = useState(`${profile.firstName} ${profile.lastName}`);
+const ProfileEditScreen = ({
+  navigation,
+  profile,
+  modifyProfile,
+  modifyPassword,
+}) => {
+  const [firstName, setFirstName] = useState(profile.firstName);
+  const [lastName, setLastName] = useState(profile.lastName);
   const [email, setEmail] = useState(profile.email);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -59,8 +65,7 @@ const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
           "https://api.imgbb.com/1/upload?key=6b1e8b98295c868b89d24134aa528527",
           form
         );
-        const nameArray = name.split(" ");
-        const [firstName, ...lastName] = nameArray;
+
         setAvatarURL(data.data.data.display_url);
 
         temp = data.data.data.display_url;
@@ -68,27 +73,28 @@ const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
       if (newPassword !== confirmPassword) {
         setHasError(true);
         setErrorMessage("Password Confirmation Fail");
-      } else {
+
+        return;
+      } else if (oldPassword.length > 0) {
         const userCredentials = await auth.signInWithEmailAndPassword(
           email,
           oldPassword
         );
-        if (newPassword !== "") {
+        if (newPassword.length > 0) {
           modifyPassword(newPassword);
+          navigation.goBack();
+          return;
         }
         // modify profile
-        const nameArray = name.split(" ");
-        const [firstName, ...lastName] = nameArray;
-
-        modifyProfile(
-          email,
-          firstName,
-          lastName.join(" "),
-          temp,
-          profile.username,
-          profile.isSeller
-        );
       }
+      modifyProfile(
+        email,
+        firstName,
+        lastName,
+        temp,
+        profile.username,
+        profile.isSeller
+      );
       navigation.goBack();
     } catch (err) {
       setHasError(true);
@@ -154,13 +160,21 @@ const ProfileEditScreen = ({ navigation, profile, modifyProfile }) => {
           <VStack>
             <Input
               mt={2}
-              placeholder="Name"
-              value={name}
+              placeholder="First Name"
+              value={firstName}
               onChangeText={(text) => {
-                setName(text);
+                setFirstName(text);
               }}
             />
-            <Input mt={2} placeholder="Email" value={email} editable={false} />
+            <Input
+              mt={2}
+              placeholder="Last Name"
+              value={lastName}
+              onChangeText={(text) => {
+                setLastName(text);
+              }}
+            />
+            <Input mt={2} placeholder="Email" value={email} isDisabled={true} />
             <FormControl isInvalid={errorMessage === "Incorrect Password"}>
               <Input
                 mt={2}

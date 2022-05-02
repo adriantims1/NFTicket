@@ -1,13 +1,14 @@
 import { Box, HStack, Text, VStack } from "native-base";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Dash from "react-native-dash";
 import { StyleSheet } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import axios from "axios";
 
 //Redux
 import { connect } from "react-redux";
 
-const BigTicket = () => {
+const DetailTicket = ({ owner, valid }) => {
   return (
     <Box
       bg={{
@@ -26,26 +27,10 @@ const BigTicket = () => {
         <VStack w="100%" h="40%" justifyContent="center">
           <HStack style={styles.ticketDetailContainer}>
             <Text fontWeight={700} fontSize="sm">
-              Full Name
-            </Text>
-            <Text fontWeight={700} fontSize="sm">
-              John Doe
-            </Text>
-          </HStack>
-          <HStack style={styles.ticketDetailContainer}>
-            <Text fontWeight={700} fontSize="sm">
-              Seat Place
-            </Text>
-            <Text fontWeight={700} fontSize="sm">
-              N/A
-            </Text>
-          </HStack>
-          <HStack style={styles.ticketDetailContainer}>
-            <Text fontWeight={700} fontSize="sm">
               Valid Before
             </Text>
             <Text fontWeight={700} fontSize="sm">
-              02/14/2022
+              {valid}
             </Text>
           </HStack>
         </VStack>
@@ -71,11 +56,8 @@ const BigTicket = () => {
             <Text fontWeight={700} fontSize="sm">
               Ticket Code
             </Text>
-            <Text fontWeight={700} fontSize="sm">
-              G154MD4
-            </Text>
           </VStack>
-          <QRCode value="G154MD4" />
+          {owner ? <QRCode value={owner} /> : null}
         </HStack>
       </Box>
     </Box>
@@ -94,4 +76,4 @@ const mapStateToProps = ({}) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(BigTicket);
+export default connect(mapStateToProps, mapDispatchToProps)(DetailTicket);

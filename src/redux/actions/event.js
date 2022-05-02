@@ -1,5 +1,4 @@
 import axios from "axios";
-import { eachMonthOfInterval } from "date-fns";
 
 //types
 import {
@@ -10,6 +9,8 @@ import {
   UPLOAD_EVENT_FAIL,
   UPLOAD_EVENT_SUCCESS,
 } from "../types/event";
+
+import { MODIFY_BALANCE } from "../types/profile";
 
 export const getEvent = () => {
   return async (dispatch) => {
@@ -50,7 +51,8 @@ export const createNewEvent = (
   title,
   description,
   images,
-  streetAddress
+  streetAddress,
+  success
 ) => {
   return async (dispatch, getState) => {
     try {
@@ -75,6 +77,9 @@ export const createNewEvent = (
           event_price: price,
         }
       );
+      const balanceData = await axios.get(
+        `https://nfticket-backend.herokuapp.com/api/user/balance/${email}/`
+      );
 
       dispatch({
         type: UPLOAD_EVENT_SUCCESS,
@@ -82,7 +87,16 @@ export const createNewEvent = (
           allEvent: [...allEvent, data.data],
         },
       });
+      dispatch(getEvent());
+      dispatch({
+        type: MODIFY_BALANCE,
+        payload: {
+          balance: balanceData.data.Micro_Algos,
+        },
+      });
+      success();
     } catch (err) {
+      console.log(err.response.data);
       dispatch({
         type: UPLOAD_EVENT_FAIL,
         payload: {
@@ -106,7 +120,8 @@ export const modifyEvent = (
   description,
   images,
   streetAddress,
-  eventId
+  eventId,
+  success
 ) => {
   return async (dispatch, getEvent) => {
     try {
@@ -117,7 +132,7 @@ export const modifyEvent = (
         `https://nfticket-backend.herokuapp.com/api/event/${eventId}/`,
         {
           vendor: email,
-          ticket_quantity: quantity,
+
           title,
           description,
           images,
@@ -139,6 +154,7 @@ export const modifyEvent = (
           allEvent: data.data,
         },
       });
+      success();
     } catch (err) {
       dispatch({
         type: UPLOAD_EVENT_FAIL,
