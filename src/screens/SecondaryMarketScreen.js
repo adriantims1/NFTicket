@@ -103,6 +103,7 @@ const SecondaryMarketScreen = ({
                     title={item.title}
                     date={formatDate(item.date, item.time)}
                   />
+                  <Text>Price: {item.ticket.price}</Text>
                   <ActionButton
                     text="Buy"
                     onPress={() => {

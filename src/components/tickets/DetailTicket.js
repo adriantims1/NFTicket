@@ -8,7 +8,7 @@ import axios from "axios";
 //Redux
 import { connect } from "react-redux";
 
-const DetailTicket = ({ owner, valid }) => {
+const DetailTicket = ({ owner, valid, nftId }) => {
   return (
     <Box
       bg={{
@@ -57,7 +57,12 @@ const DetailTicket = ({ owner, valid }) => {
               Ticket Code
             </Text>
           </VStack>
-          {owner ? <QRCode value={owner} /> : null}
+          {owner ? (
+            <QRCode
+              value={`https://nfticket-backend.herokuapp.com/api/verify/?owner=${owner}&nftid=${nftId}
+`}
+            />
+          ) : null}
         </HStack>
       </Box>
     </Box>

@@ -11,11 +11,22 @@ import SearchIcon from "../components/icons/SearchIcon";
 import MarketCard from "../components/cards/MarketCard";
 const { height, width } = Dimensions.get("window");
 import moment from "moment";
+import GestureRecognizer from "react-native-gesture-handler";
 
 //redux
 import { connect } from "react-redux";
+import { fetchProfile } from "../redux/actions/profile";
+import { getTicket } from "../redux/actions/ticket";
+import { getEvent } from "../redux/actions/event";
 
-const MarketScreen = ({ navigation, event }) => {
+const MarketScreen = ({
+  navigation,
+  event,
+  profile,
+  fetchProfile,
+  getTicket,
+  getEvent,
+}) => {
   const [search, setSearch] = useState("");
   const [events, setEvents] = useState(event.allEvent);
   return (
@@ -125,10 +136,11 @@ const styles = StyleSheet.create({
     height: height * 0.9,
   },
 });
-const mapStateToProps = ({ event }) => ({
+const mapStateToProps = ({ event, profile }) => ({
   event,
+  profile,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { fetchProfile, getEvent, getTicket };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MarketScreen);

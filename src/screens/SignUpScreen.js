@@ -73,7 +73,7 @@ const SignUpScreen = ({ navigation }) => {
         "https://nfticket-backend.herokuapp.com/api/email/"
       );
       const { emails } = data.data;
-      console.log(emails);
+
       if (emails.indexOf(email) == -1) {
         return true;
       }
@@ -97,6 +97,11 @@ const SignUpScreen = ({ navigation }) => {
         setErrorEmail(true);
         return;
       }
+      const userCredentials = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      await userCredentials.user.sendEmailVerification();
 
       await axios.post("https://nfticket-backend.herokuapp.com/api/user/", {
         first_name: firstName,
@@ -106,22 +111,10 @@ const SignUpScreen = ({ navigation }) => {
         avtar_url: "https://i.ibb.co/P9M9Ypf/test.png",
         username,
       });
-      auth
-        .createUserWithEmailAndPassword(email, password)
-        .catch((error) => alert(error.message))
-        .then((userCredentials) => {
-          console.log("Registered with " + userCredentials.user.email);
-          userCredentials.user
-            .sendEmailVerification()
-            .then(() => {
-              auth.signOut();
-              navigation.navigate("Login");
-              console.log("success");
-            })
-            .catch((error) => alert(error));
-        });
+      auth.signOut();
+      navigation.navigate("Login");
     } catch (err) {
-      console.log(err);
+      alert(err);
     }
   };
 
@@ -172,7 +165,7 @@ const SignUpScreen = ({ navigation }) => {
 
             <Input
               value={email}
-              onChangeText={(text) => setEmail(text)}
+              onChangeText={(text) => setEmail(text.trim())}
               borderColor={"black"}
             />
             <FormControl.ErrorMessage

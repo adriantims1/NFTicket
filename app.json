@@ -10,23 +10,37 @@
     ],
     "name": "NFTicket",
     "slug": "NFTicket",
-    "description":"The app for your ticket needs",
+    "description": "The app for your ticket needs",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
     ],
-    "orientation":"portrait",
-    "icon":"./assets/images/icon.png",
-    "splash":{
-      "image":"./assets/images/splash-screen.png",
-      "resizeMode":"contain",
-      "backgroundColr":"#ffffff"
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash-screen.png",
+      "resizeMode": "contain",
+      "backgroundColr": "#ffffff"
     },
-    "android":{
-      "adaptiveIcon":{
-        "foregroundImage":"./assets/images/adaptive-icon.png",
-        "backgroundColor":"#FFF"
-      }
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#FFF"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "ios": {
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you share them with your friends.",
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      },
+      "bundleIdentifier": "com.adriantims.NFTicket"
     }
   },
   "name": "NFTicket"

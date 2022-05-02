@@ -6,6 +6,7 @@ import ActionButton from "../buttons/ActionButton";
 import QRCode from "react-native-qrcode-svg";
 import AlgorandInBalanceCardIcon from "../icons/AlgorandInBalanceCardIcon";
 import CardIcon from "../icons/CardIcon";
+import { Ionicons } from "@expo/vector-icons";
 
 const BalanceCard = ({ profile }) => {
   const [tab, setTab] = useState(true); /*true: Balance, false: Wallet hash*/
@@ -36,8 +37,10 @@ const BalanceCard = ({ profile }) => {
             <QRCode value={profile.walletAddress} />
           )}
         </VStack>
+
         <CardIcon />
       </HStack>
+      <Text mt={2}>{profile.walletAddress}</Text>
     </VStack>
   );
 };

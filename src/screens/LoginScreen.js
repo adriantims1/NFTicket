@@ -57,7 +57,7 @@ const LoginScreen = ({ navigation, fetchProfile, profile }) => {
           <FormControl.Label>Email</FormControl.Label>
           <Input
             value={email}
-            onChangeText={(text) => setEmail(text)}
+            onChangeText={(text) => setEmail(text.trim())}
             borderColor={"black"}
           ></Input>
         </FormControl>
