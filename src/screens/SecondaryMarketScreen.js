@@ -114,7 +114,6 @@ const SecondaryMarketScreen = ({
                         item.ticket.id,
                         () => {
                           setSuccessBuying(true);
-                          navigation.goBack();
                         } /*success*/,
                         () => {
                           setBuyingError(true);
