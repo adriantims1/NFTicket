@@ -99,7 +99,7 @@ const TicketDetailScreen = ({ navigation, ticket }) => {
         </HStack>
         {/* ------------------ */}
         {/* ----- Ticket ----- */}
-        <DetailTicket valid={valid} owner={owner} nftId />
+        <DetailTicket valid={valid} owner={owner} nftId={nftId} />
         {/* ------------------ */}
         {/* ----- Detail ----- */}
         <ScrollView showsVerticalScrollIndicator={false} mt={4}>

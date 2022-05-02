@@ -52,7 +52,11 @@ const HomeScreen = ({
         getEvent();
         setRefreshing(false);
       }}
-      config={{ velocityThreshold: 0.01, directionalOffsetThreshold: 50 }}
+      config={{
+        velocityThreshold: 0.3,
+        directionalOffsetThreshold: 90,
+        gestureIsClickThreshold: 1,
+      }}
       style={{ flex: 1, zIndex: 10 }}
     >
       <SafeAreaView>
