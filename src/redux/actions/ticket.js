@@ -15,6 +15,7 @@ import {
 } from "../types/ticket";
 
 import { getEvent } from "./event";
+import { fetchTransaction } from "./transaction";
 
 export const getTicket = (email) => {
   return async (dispatch) => {
@@ -140,6 +141,7 @@ export const buyTicketFromSecondaryMarket = (
         type: MODIFY_BALANCE,
         payload: { balance: balance.data.Micro_Algos },
       });
+      dispatch(fetchTransaction());
       success();
     } catch (err) {
       dispatch({

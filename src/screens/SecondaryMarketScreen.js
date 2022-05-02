@@ -113,11 +113,10 @@ const SecondaryMarketScreen = ({
                         profile.email,
                         item.ticket.id,
                         () => {
-                          console.log("success");
                           setSuccessBuying(true);
+                          navigation.goBack();
                         } /*success*/,
                         () => {
-                          console.log("success");
                           setBuyingError(true);
                         } /*failure*/
                       );
