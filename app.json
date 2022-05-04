@@ -40,7 +40,7 @@
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
       },
-      "bundleIdentifier": "com.adriantims.NFTicket"
+      "bundleIdentifier": "org.name.NFTicket"
     }
   },
   "name": "NFTicket"
