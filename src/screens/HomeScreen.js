@@ -43,136 +43,116 @@ const HomeScreen = ({
   const [refreshing, setRefreshing] = useState(false);
 
   return (
-    <GestureRecognizer
-      onSwipeDown={() => {
-        console.log("swipe down");
-        setRefreshing(true);
-        fetchProfile(profile.email);
-        getTicket(profile.email);
-        getEvent();
-        setRefreshing(false);
-      }}
-      config={{
-        velocityThreshold: 0.3,
-        directionalOffsetThreshold: 90,
-        gestureIsClickThreshold: 1,
-      }}
-      style={{ flex: 1, zIndex: 10 }}
-    >
-      <SafeAreaView>
-        <ScrollView
-          style={styles.container}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* ----- Header ----- */}
-          <HStack w="100%" justifyContent="space-between" mt={4}>
-            <VStack>
-              <Text fontWeight={700} fontSize="xl">
-                Welcome Back,
-              </Text>
-              <Text fontWeight={700} fontSize="xl">
-                {`${profile.firstName} ${profile.lastName}`}
-              </Text>
-            </VStack>
-            <Avatar
-              alignSelf="center"
-              size="md"
-              source={{
-                uri: profile.avatarURL,
-              }}
-            >
-              {`${profile.firstName[0]} ${profile.lastName[0]}`}
-            </Avatar>
-          </HStack>
-          {/* ------------------ */}
-          <BalanceCard />
+    <SafeAreaView>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* ----- Header ----- */}
+        <HStack w="100%" justifyContent="space-between" mt={4}>
+          <VStack>
+            <Text fontWeight={700} fontSize="xl">
+              Welcome Back,
+            </Text>
+            <Text fontWeight={700} fontSize="xl">
+              {`${profile.firstName} ${profile.lastName}`}
+            </Text>
+          </VStack>
+          <Avatar
+            alignSelf="center"
+            size="md"
+            source={{
+              uri: profile.avatarURL,
+            }}
+          >
+            {`${profile.firstName[0]} ${profile.lastName[0]}`}
+          </Avatar>
+        </HStack>
+        {/* ------------------ */}
+        <BalanceCard />
 
-          {/* ----- Active Ticket ----- */}
-          <Text fontWeight={700} fontSize="lg" color="grey" mt={4}>
-            Active Ticket
-          </Text>
-          <Box mt={4}>
-            {ticket.allTicket.filter((el) => !el.is_expired).length > 0 ? (
-              <FlatList
-                data={ticket.allTicket.filter((el) => !el.is_expired)}
-                keyExtractor={(item, index) => {
-                  return item.ticket?.id || index + 100;
-                }}
-                horizontal={true}
-                renderItem={({ item }) => {
-                  const { title, date, time } = item;
-                  const dateMoment = moment(
-                    `${date} ${time}`,
-                    "YYYY-MM-DD hh:mm:ss"
-                  );
-                  const monthNames = [
-                    "January",
-                    "February",
-                    "March",
-                    "April",
-                    "May",
-                    "June",
-                    "July",
-                    "August",
-                    "September",
-                    "October",
-                    "November",
-                    "December",
-                  ];
-                  return (
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate("TicketDetail", {
-                          id: item.ticket.id,
-                        });
-                      }}
-                    >
-                      <SmallTicket
-                        title={title}
-                        date={`${dateMoment.date()} ${
-                          monthNames[dateMoment.month()]
-                        } ${dateMoment.year()} - ${time}`}
-                      />
-                    </TouchableOpacity>
-                  );
-                }}
-                showsHorizontalScrollIndicator={false}
-              />
-            ) : (
-              <Text fontWeight={500} fontSize="md">
-                No Ticket Found
-              </Text>
-            )}
-          </Box>
-          {/* ------------------ */}
-          {/* ----- Featured ----- */}
-          <Text fontWeight={700} fontSize="lg" color="grey" mt={4}>
-            Featured
-          </Text>
-
-          <Box mt={4}>
+        {/* ----- Active Ticket ----- */}
+        <Text fontWeight={700} fontSize="lg" color="grey" mt={4}>
+          Active Ticket
+        </Text>
+        <Box mt={4}>
+          {ticket.allTicket.filter((el) => !el.is_expired).length > 0 ? (
             <FlatList
-              data={event.allEvent
-                .filter((item, id) => item.tickets_remaining > 0)
-                .slice(0, 5)}
-              keyExtractor={(item, index) => item.id}
+              data={ticket.allTicket.filter((el) => !el.is_expired)}
+              keyExtractor={(item, index) => {
+                return item.ticket?.id || index + 100;
+              }}
               horizontal={true}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("EventDetail", { id: item.id });
-                  }}
-                >
-                  <FeaturedCard imageURL={item.images[0]} title={item.title} />
-                </TouchableOpacity>
-              )}
+              renderItem={({ item }) => {
+                const { title, date, time } = item;
+                const dateMoment = moment(
+                  `${date} ${time}`,
+                  "YYYY-MM-DD hh:mm:ss"
+                );
+                const monthNames = [
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
+                ];
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("TicketDetail", {
+                        id: item.ticket.id,
+                      });
+                    }}
+                  >
+                    <SmallTicket
+                      title={title}
+                      date={`${dateMoment.date()} ${
+                        monthNames[dateMoment.month()]
+                      } ${dateMoment.year()} - ${time}`}
+                    />
+                  </TouchableOpacity>
+                );
+              }}
               showsHorizontalScrollIndicator={false}
             />
-          </Box>
-          {/* ------------------ */}
-        </ScrollView>
-      </SafeAreaView>
-    </GestureRecognizer>
+          ) : (
+            <Text fontWeight={500} fontSize="md">
+              No Ticket Found
+            </Text>
+          )}
+        </Box>
+        {/* ------------------ */}
+        {/* ----- Featured ----- */}
+        <Text fontWeight={700} fontSize="lg" color="grey" mt={4}>
+          Featured
+        </Text>
+
+        <Box mt={4}>
+          <FlatList
+            data={event.allEvent
+              .filter((item, id) => item.tickets_remaining > 0)
+              .slice(0, 5)}
+            keyExtractor={(item, index) => item.id}
+            horizontal={true}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("EventDetail", { id: item.id });
+                }}
+              >
+                <FeaturedCard imageURL={item.images[0]} title={item.title} />
+              </TouchableOpacity>
+            )}
+            showsHorizontalScrollIndicator={false}
+          />
+        </Box>
+        {/* ------------------ */}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
