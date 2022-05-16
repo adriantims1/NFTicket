@@ -7,9 +7,21 @@ import QRCode from "react-native-qrcode-svg";
 import AlgorandInBalanceCardIcon from "../icons/AlgorandInBalanceCardIcon";
 import CardIcon from "../icons/CardIcon";
 import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
+import { fetchProfile } from "../../redux/actions/profile";
 
-const BalanceCard = ({ profile }) => {
+const BalanceCard = ({ profile, fetchProfile }) => {
   const [tab, setTab] = useState(true); /*true: Balance, false: Wallet hash*/
+
+  const copyClipboard = async () => {
+    try {
+      await Clipboard.setString(profile.walletAddress);
+      alert("copied");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <VStack p={5} mt={4} bgColor="white" style={styles.container}>
       <HStack justifyContent="space-between" mb={4}>
@@ -40,7 +52,16 @@ const BalanceCard = ({ profile }) => {
 
         <CardIcon />
       </HStack>
-      <Text mt={2}>{profile.walletAddress}</Text>
+
+      <ActionButton width="100%" text="Copy Wallet" onPress={copyClipboard} />
+      <ActionButton
+        width="100%"
+        text="Refresh Balance"
+        onPress={() => {
+          fetchProfile(profile.email);
+        }}
+        mt={2}
+      />
     </VStack>
   );
 };
@@ -55,6 +76,6 @@ const mapStateToProps = ({ profile }) => ({
   profile,
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { fetchProfile };
 
 export default connect(mapStateToProps, mapDispatchToProps)(BalanceCard);

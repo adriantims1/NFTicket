@@ -9,7 +9,6 @@ import {
   MODIFY_PROFILE,
   MODIFY_PROFILE_FAIL,
   MODIFY_PROFILE_SUCCESS,
-  UPDATE_PASSWORD,
 } from "../types/profile";
 
 export const fetchProfile = (email) => {
