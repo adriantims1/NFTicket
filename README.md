@@ -25,17 +25,18 @@ If you are using an Android phone you can just simply scan this QR Code from you
 ## Folder structure
 
 This template follows a very simple project structure:
-
+- `navigators`: This folder contains all the routing and the screen structure.
 - `src`: This folder is the main container of all the code inside your application.
   - `assets`: Asset folder to store fonts.
   - `components`: Folder to store any common component (such as generic button).
-  
-  - `navigation`: Folder to store the navigators.
+        - `buttons`: Folder that contains a custom Action Button.
+        - `cards`: Folder that contains custom Cards.
+        - `icons`: Folder that contains all Icons. 
+        - `tickets`: Folder that contains all Tickets.
   - `redux`: Folder that contains stuff related to Redux.
+        - `actions`: Folder that contains all functions that calls on the backend.
+        - `reducers`: Folder that contains data containers.
+        - `types`: Folder that contains static types used as a redux action.
   - `screens`: Folder that contains all your application screens/features.
-  - `store`: Folder to put all redux middlewares and the store.
   - `App.js`: Main component that starts your whole app.
   - `index.js`: Entry point of your application as per React-Native standards.
-
-
-
